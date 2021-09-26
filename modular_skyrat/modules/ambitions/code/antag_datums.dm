@@ -11,7 +11,7 @@
 	return
 
 /datum/antagonist/traitor
-	uses_ambitions = TRUE
+	uses_ambitions = FALSE
 
 /datum/antagonist/traitor/ambitions_add()
 	if(give_uplink)
@@ -19,7 +19,7 @@
 	uplink = owner.find_syndicate_uplink()
 
 /datum/antagonist/changeling
-	uses_ambitions = TRUE
+	uses_ambitions = FALSE
 
 /datum/antagonist/changeling/ambitions_add()
 	create_actions()
