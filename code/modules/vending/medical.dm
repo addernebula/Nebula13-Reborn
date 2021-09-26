@@ -29,7 +29,7 @@
 					/obj/item/storage/organbox = 1,
 					//SKYRAT EDIT BEGIN - ADDS CORTICAL STACKS AND REMOVERS TO NANOMEDS
 					/obj/item/autosurgeon/organ/corticalstack = 3,
-					/obj/item/stackremover = 5
+					/obj/item/stackremover = 5,
 					//SKYRAT EDIT END
 					//NEBULA CHANGE BEGIN
 					/obj/item/skillchip/job/medical = 4
