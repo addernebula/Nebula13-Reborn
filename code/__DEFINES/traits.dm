@@ -293,6 +293,10 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_MARTIAL_ARTS_IMMUNE "martial_arts_immune"
 /// You've been cursed with a living duffelbag, and can't have more added
 #define TRAIT_DUFFEL_CURSE_PROOF "duffel_cursed"
+// NEBULA TRAITS START
+#define TRAIT_FORCE_WHISPER "forcewhisper"
+#define TRAIT_SELF_SURGERY_CAPABLE "selfsurg"
+// NEBULA TRAITS END
 /// Revenants draining you only get a very small benefit.
 #define TRAIT_WEAK_SOUL "weak_soul"
 /// Prevents mob from riding mobs when buckled onto something

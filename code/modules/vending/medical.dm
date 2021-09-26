@@ -31,6 +31,9 @@
 					/obj/item/autosurgeon/organ/corticalstack = 3,
 					/obj/item/stackremover = 5
 					//SKYRAT EDIT END
+					//NEBULA CHANGE BEGIN
+					/obj/item/skillchip/job/medical = 4
+					//NEBULA CHANGE END
 					)
 	refill_canister = /obj/item/vending_refill/medical
 	default_price = PAYCHECK_EASY
