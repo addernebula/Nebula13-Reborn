@@ -27,13 +27,12 @@
 					//SKYRAT EDIT BEGIN - ADDS CORTICAL STACKS AND REMOVERS TO NANOMEDS
 					/obj/item/autosurgeon/organ/corticalstack = 3,
 					/obj/item/stackremover = 5,
+					/obj/item/storage/organbox = 1
 					//SKYRAT EDIT END
 					//NEBULA CHANGE BEGIN
 					/obj/item/skillchip/job/medical = 4
 					//NEBULA CHANGE END
-					)
-					/obj/item/storage/organbox = 1)
-	refill_canister = /obj/item/vending_refill/medical
+	refill_canister = /obj/item/vending_refill/medical)
 	default_price = PAYCHECK_EASY
 	extra_price = PAYCHECK_COMMAND
 	payment_department = ACCOUNT_MED
