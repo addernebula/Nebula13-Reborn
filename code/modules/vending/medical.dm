@@ -14,15 +14,12 @@
 					/obj/item/healthanalyzer/wound = 4,
 					/obj/item/stack/medical/ointment = 2,
 					/obj/item/stack/medical/suture = 2,
-					/obj/item/stack/medical/bone_gel/four = 4,
-					/obj/item/taperoll/med = 2,	//SKYRAT EDIT - Job tape!
-					/obj/item/taperoll/bio = 2)	//SKYRAT EDIT - Job tape!
+					/obj/item/stack/medical/bone_gel/four = 4)
 	contraband = list(/obj/item/storage/box/gum/happiness = 3,
 						/obj/item/storage/box/hug/medical = 1)
 	premium = list(/obj/item/reagent_containers/hypospray/medipen = 3,
 					/obj/item/storage/belt/medical = 3,
 					/obj/item/sensor_device = 2,
-					/obj/item/ttsdevice = 3, //SKYRAT EDIT TTS DEVICES
 					/obj/item/pinpointer/crew = 2,
 					/obj/item/storage/firstaid/advanced = 2,
 					/obj/item/shears = 1,
@@ -35,6 +32,7 @@
 					/obj/item/skillchip/job/medical = 4
 					//NEBULA CHANGE END
 					)
+					/obj/item/storage/organbox = 1)
 	refill_canister = /obj/item/vending_refill/medical
 	default_price = PAYCHECK_EASY
 	extra_price = PAYCHECK_COMMAND
@@ -48,11 +46,6 @@
 /obj/machinery/vending/medical/syndicate_access
 	name = "\improper SyndiMed Plus"
 	req_access = list(ACCESS_SYNDICATE)
-//SKYRAT EDIT - ADDS DELACERS AND AUTOSURGEONS TO SYNDIES
-	premium = list(/obj/item/autosurgeon/organ/syndicate/corticalstack = 20,
-	/obj/item/stackremover/syndicate = 20,
-	/obj/item/organ/corticalstack/syndicate = 40)
-//SKYRAT EDIT END
 
 //Created out of a necessity to get these dumb chems out of the medical tools vendor.
 /obj/machinery/vending/drugs
