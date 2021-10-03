@@ -30,7 +30,7 @@
 					/obj/item/storage/organbox = 1,
 					//SKYRAT EDIT END
 					//NEBULA CHANGE BEGIN
-					/obj/item/skillchip/job/medical = 4,
+					//obj/item/skillchip/job/medical = 4,
 					//NEBULA CHANGE END
 	refill_canister = /obj/item/vending_refill/medical)
 	products = list(
