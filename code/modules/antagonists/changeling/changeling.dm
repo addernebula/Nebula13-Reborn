@@ -18,18 +18,6 @@
 	suicide_cry = "FOR THE HIVE!!"
 	/// Whether to give this changeling objectives or not
 	var/give_objectives = TRUE
-	var/competitive_objectives = TRUE //Should we assign objectives in competition with other lings?
-
-	//Changeling Stuff
-
-	var/list/stored_profiles = list() //list of datum/changelingprofile
-	var/datum/changelingprofile/first_prof = null
-	var/dna_max = 8 //How many extra DNA strands the changeling can store for transformation. // SKYRAT EDIT CHANGE : ORIGINAL: 6
-	var/absorbedcount = 0
-	var/trueabsorbs = 0//dna gained using absorb, not dna sting
-	var/chem_charges = 75 //SKYRAT EDIT CHANGE - ORIGINAL: 20
-	var/chem_storage = 100 //SKYRAT EDIT CHANGE - ORIGINAL: 75
-	var/chem_recharge_rate = 1.5 //SKYRAT EDIT CHANGE - ORIGINAL: 1
 	/// Weather we assign objectives which compete with other lings
 	var/competitive_objectives = FALSE
 
@@ -117,18 +105,6 @@
 
 /datum/antagonist/changeling/Destroy()
 	QDEL_NULL(emporium_action)
-	. = ..()
-
-/datum/antagonist/changeling/proc/create_actions()
-	if(!cellular_emporium)
-		cellular_emporium = new(src)
-	if(!emporium_action)
-		emporium_action = new(cellular_emporium) 
-	emporium_action.Grant(owner.current)
-
-/datum/antagonist/changeling/on_gain()
-	create_actions()
-	reset_powers()
 	QDEL_NULL(cellular_emporium)
 	return ..()
 
@@ -173,15 +149,6 @@
 	living_mob.hud_used?.lingchemdisplay.invisibility = INVISIBILITY_ABSTRACT
 
 /datum/antagonist/changeling/on_removal()
-	//We'll be using this from now on
-	var/mob/living/carbon/C = owner.current
-	if(istype(C))
-		var/obj/item/organ/brain/B = C.getorganslot(ORGAN_SLOT_BRAIN)
-		if(B && (B.decoy_override != initial(B.decoy_override)))
-			B.organ_flags |= ORGAN_VITAL
-			B.decoy_override = FALSE
-	remove_changeling_powers()
-	. = ..()
 	remove_changeling_powers(include_innate = TRUE)
 	if(!iscarbon(owner.current))
 		return
@@ -572,6 +539,9 @@
 
 /// Generate objectives for our changeling.
 /datum/antagonist/changeling/proc/forge_objectives()
+	//OBJECTIVES - random traitor objectives. Unique objectives "steal brain" and "identity theft".
+	//No escape alone because changelings aren't suited for it and it'd probably just lead to rampant robusting
+	//If it seems like they'd be able to do it in play, add a 10% chance to have to escape alone
 
 	var/escape_objective_possible = TRUE
 
@@ -900,12 +870,6 @@
 
 // Changelings spawned from non-changeling headslugs (IE, due to being transformed into a headslug as a non-ling). Weaker than a normal changeling.
 /datum/antagonist/changeling/headslug
-	name = "Headslug Changeling"
-	show_in_antagpanel = TRUE
-	give_objectives = FALSE
-	soft_antag = TRUE
-	geneticpoints = 5
-	total_geneticspoints = 5
 	name = "\improper Headslug Changeling"
 	show_in_antagpanel = FALSE
 	give_objectives = FALSE

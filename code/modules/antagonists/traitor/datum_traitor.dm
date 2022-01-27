@@ -196,62 +196,6 @@
 /// Generates a complete set of traitor objectives up to the traitor objective limit, including non-generic objectives such as martyr and hijack.
 /datum/antagonist/traitor/proc/forge_traitor_objectives()
 	objectives.Cut()
-	var/objective_count = 0
-	if((GLOB.joined_player_list.len >= HIJACK_MIN_PLAYERS) && prob(HIJACK_PROB))
-		is_hijacker = TRUE
-		objective_count++
-
-	var/objective_limit = CONFIG_GET(number/traitor_objectives_amount)
-
-	// for(in...to) loops iterate inclusively, so to reach objective_limit we need to loop to objective_limit - 1
-	// This does not give them 1 fewer objectives than intended.
-	for(var/i in objective_count to objective_limit - 1)
-		objectives += forge_single_generic_objective()
-
-/datum/antagonist/traitor/proc/forge_ending_objective()
-	var/is_martyr = prob(MARTYR_PROB)
-	var/martyr_compatibility = TRUE
-
-	for(var/datum/objective/traitor_objective in objectives)
-		if(!traitor_objective.martyr_compatible)
-			martyr_compatibility = FALSE
-			break
-
-	if(martyr_compatibility && is_martyr)
-		var/datum/objective/martyr/martyr_objective = new
-		martyr_objective.owner = owner
-		objectives += martyr_objective
-		return
-
-	var/datum/objective/escape/escape_objective = new
-	escape_objective.owner = owner
-	objectives += escape_objective
-
-/// Adds a generic kill or steal objective to this datum's objective list.
-/datum/antagonist/traitor/proc/forge_single_generic_objective()
-	if(prob(KILL_PROB))
-		var/list/active_ais = active_ais()
-		if(active_ais.len && prob(DESTROY_AI_PROB(GLOB.joined_player_list.len)))
-			var/datum/objective/destroy/destroy_objective = new
-			destroy_objective.owner = owner
-			destroy_objective.find_target()
-			return destroy_objective
-
-		if(prob(MAROON_PROB))
-			var/datum/objective/maroon/maroon_objective = new
-			maroon_objective.owner = owner
-			maroon_objective.find_target()
-			return maroon_objective
-
-		var/datum/objective/assassinate/kill_objective = new
-		kill_objective.owner = owner
-		kill_objective.find_target()
-		return kill_objective
-
-	var/datum/objective/steal/steal_objective = new
-	steal_objective.owner = owner
-	steal_objective.find_target()
-	return steal_objective
 
 	var/datum/objective/traitor_progression/final_objective = new /datum/objective/traitor_progression()
 	final_objective.owner = owner
