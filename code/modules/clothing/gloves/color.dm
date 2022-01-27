@@ -104,7 +104,23 @@
 	max_heat_protection_temperature = GLOVES_MAX_TEMP_PROTECT
 	resistance_flags = NONE
 	cut_type = /obj/item/clothing/gloves/fingerless
-
+	// SKYRAT EDIT ADDITION START
+	uses_advanced_reskins = TRUE
+	unique_reskin = list(
+		"Basic Gloves" = list(
+			RESKIN_ICON = 'icons/obj/clothing/gloves.dmi',
+			RESKIN_ICON_STATE = "black",
+			RESKIN_WORN_ICON = 'icons/mob/clothing/hands.dmi',
+			RESKIN_WORN_ICON_STATE = "black"
+		),
+		"Peacekeeper Gloves" = list(
+			RESKIN_ICON = 'modular_skyrat/master_files/icons/obj/clothing/gloves.dmi',
+			RESKIN_ICON_STATE = "peacekeeper_gloves",
+			RESKIN_WORN_ICON = 'modular_skyrat/master_files/icons/mob/clothing/hands.dmi',
+			RESKIN_WORN_ICON_STATE = "peacekeeper"
+		)
+	)
+	// SKYRAT EDIT ADDITION END
 /obj/item/clothing/gloves/fingerless
 	name = "fingerless gloves"
 	desc = "Plain black gloves without fingertips for the hard working."
@@ -192,7 +208,7 @@
 	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_TEMP_PROTECT
 	strip_delay = 60
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 70, ACID = 50)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 70, ACID = 50)
 	resistance_flags = NONE
 
 /obj/item/clothing/gloves/color/chief_engineer
@@ -240,7 +256,7 @@
 /obj/item/clothing/gloves/color/latex/engineering
 	name = "tinker's gloves"
 	desc = "Overdesigned engineering gloves that have automated construction subrutines dialed in, allowing for faster construction while worn."
-	icon = 'icons/obj/clothing/clockwork_garb.dmi'
+	icon = 'icons/obj/clothing/gloves.dmi'
 	icon_state = "clockwork_gauntlets"
 	inhand_icon_state = "clockwork_gauntlets"
 	siemens_coefficient = 0.8
@@ -254,3 +270,9 @@
 	icon_state = "white"
 	inhand_icon_state = "wgloves"
 	custom_price = PAYCHECK_MINIMAL
+
+/obj/item/clothing/gloves/kim
+	name = "aerostatic gloves"
+	desc = "Breathable red gloves for expert handling of a pen and notebook."
+	icon_state = "aerostatic_gloves"
+	inhand_icon_state = "aerostatic_gloves"

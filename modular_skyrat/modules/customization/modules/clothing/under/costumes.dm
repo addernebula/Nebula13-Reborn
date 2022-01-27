@@ -16,6 +16,14 @@
 	body_parts_covered = CHEST|GROIN
 	can_adjust = FALSE
 
+/obj/item/clothing/under/costume/deckers/alt
+	name = "deckers maskless outfit"
+	desc = "A decker jumpsuit with neon blue coloring."
+	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
+	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
+	icon_state = "decking_jumpsuit"
+	can_adjust = FALSE
+
 /obj/item/clothing/under/costume/qipao/red
 	name = "red qipao"
 	desc = "A qipao, traditionally worn in ancient Earth China by women during social events and lunar new years. This one is red."
@@ -96,6 +104,12 @@
 	desc = "Dedicate yourself to something better. To loyalty, honour, for it only dies when everyone abandons it."
 	icon_state = "arthur_morgan"
 
+/obj/item/clothing/under/pants/tactical
+	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
+	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
+	name = "tactical pants"
+	desc = "A pair of tactical pants, designed for military use."
+	icon_state = "tactical_pants"
 
 /obj/item/clothing/under/syndicate/tacticool/sensors
 	name = "tacticool turtleneck"
@@ -103,7 +117,7 @@
 	icon_state = "tactifool"
 	inhand_icon_state = "bl_suit"
 	has_sensor = HAS_SENSORS
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 0, ACID = 0)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 0, ACID = 0)
 
 /obj/item/clothing/under/syndicate/tacticool/skirt/sensors
 	name = "tacticool skirtleneck"
@@ -111,9 +125,13 @@
 	icon_state = "tactifool_skirt"
 	inhand_icon_state = "bl_suit"
 	has_sensor = HAS_SENSORS
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 0, ACID = 0)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 0, ACID = 0)
 	fitted = FEMALE_UNIFORM_TOP
 	dying_key = DYE_REGISTRY_JUMPSKIRT
+
+/obj/item/clothing/under/syndicate/bloodred/sleepytime/sensors
+	has_sensor = HAS_SENSORS
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 0, ACID = 0)
 
 /obj/item/clothing/under/syndicate/tacticool/CtrlShiftClick(mob/user) //This handles changing the design between new and old for skirtle and turtlenecks
 	. = ..()

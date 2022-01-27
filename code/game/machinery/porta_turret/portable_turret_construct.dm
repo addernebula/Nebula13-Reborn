@@ -98,7 +98,7 @@
 
 		if(PTURRET_INTERNAL_ARMOUR_ON)
 			if(istype(I, /obj/item/gun/energy)) //the gun installation part
-				if(istype(I, /obj/item/gun/energy/medigun)) //SKYRAT EDIT MEDIGUNS//
+				if(istype(I, /obj/item/gun/energy/cell_loaded/medigun)) //SKYRAT EDIT MEDIGUNS//
 					to_chat(user, span_notice("The [I] is unable to fit inside of the turret"))
 					return //SKYRAT EDIT MEDIGUN END//
 				var/obj/item/gun/energy/E = I
@@ -181,13 +181,13 @@
 				return
 
 	if(istype(I, /obj/item/pen)) //you can rename turrets like bots!
-		var/t = stripped_input(user, "Enter new turret name", name, finish_name)
-		if(!t)
+		var/choice = tgui_input_text(user, "Enter a new turret name", "Turret Classification", finish_name, MAX_NAME_LEN)
+		if(!choice)
 			return
-		if(!Adjacent(user))
+		if(!user.canUseTopic(src, BE_CLOSE))
 			return
 
-		finish_name = t
+		finish_name = choice
 		return
 	return ..()
 

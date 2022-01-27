@@ -48,7 +48,7 @@
 	var/list/alt_job_titles = list()
 
 	//Determines if the player has undergone TGUI preferences migration, if so, this will prevent constant loading.
-	var/tgui_prefs_migration = FALSE
+	var/tgui_prefs_migration = TRUE
 
 /datum/preferences/proc/species_updated(species_type)
 	all_quirks = list()
@@ -170,7 +170,7 @@
 	var/leverage = 0
 	if(current_aug)
 		leverage += current_aug.cost
-	if((quirk_points+leverage)>= target_aug.cost)
+	if((quirk_points + leverage)>= target_aug.cost)
 		return TRUE
 	else
 		return FALSE

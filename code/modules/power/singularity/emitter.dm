@@ -130,7 +130,7 @@
 		. += span_notice("Its status display is glowing faintly.")
 	else
 		. += span_notice("Its status display reads: Emitting one beam every <b>[DisplayTimeText(fire_delay)]</b>.")
-		. += span_notice("Power consumption at <b>[DisplayPower(active_power_usage)]</b>.")
+		. += span_notice("Power consumption at <b>[display_power(active_power_usage)]</b>.")
 
 /obj/machinery/power/emitter/ComponentInitialize()
 	. = ..()
@@ -360,7 +360,7 @@
 /obj/machinery/power/emitter/proc/integrate(obj/item/gun/energy/energy_gun, mob/user)
 	if(!istype(energy_gun, /obj/item/gun/energy))
 		return
-	if(istype(energy_gun, /obj/item/gun/energy/medigun))//SKYRAT EDIT MEDIGUNS
+	if(istype(energy_gun, /obj/item/gun/energy/cell_loaded))//SKYRAT EDIT MEDIGUNS
 		return //SKYRAT EDIT END
 	if(!user.transferItemToLoc(energy_gun, src))
 		return
@@ -417,7 +417,7 @@
 
 //BUCKLE HOOKS
 
-/obj/machinery/power/emitter/prototype/unbuckle_mob(mob/living/buckled_mob,force = 0)
+/obj/machinery/power/emitter/prototype/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	playsound(src,'sound/mecha/mechmove01.ogg', 50, TRUE)
 	manual = FALSE
 	for(var/obj/item/item in buckled_mob.held_items)
@@ -552,7 +552,7 @@
 			user.pixel_x = 8
 			user.pixel_y = -12
 
-	emitter.last_projectile_params = calculate_projectile_angle_and_pixel_offsets(user, clickparams)
+	emitter.last_projectile_params = calculate_projectile_angle_and_pixel_offsets(user, null, clickparams)
 
 	if(emitter.charge >= 10 && world.time > delay)
 		emitter.charge -= 10

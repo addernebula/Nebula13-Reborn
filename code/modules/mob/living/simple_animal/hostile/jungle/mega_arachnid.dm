@@ -16,7 +16,7 @@
 	ranged = 1
 	pixel_x = -16
 	base_pixel_x = -16
-	move_to_delay = 10
+	move_to_delay = 5
 	aggro_vision_range = 9
 	speak_emote = list("chitters")
 	attack_sound = 'sound/weapons/bladeslice.ogg'
@@ -27,6 +27,7 @@
 	alpha = 50
 
 	footstep_type = FOOTSTEP_MOB_CLAW
+	var/datum/action/small_sprite/mini_arachnid = new/datum/action/small_sprite/mega_arachnid()
 
 /mob/living/simple_animal/hostile/jungle/mega_arachnid/Life(delta_time = SSMOBS_DT, times_fired)
 	..()
@@ -53,6 +54,7 @@
 /mob/living/simple_animal/hostile/jungle/mega_arachnid/Initialize(mapload)
 	. = ..()
 	add_cell_sample()
+	mini_arachnid.Grant(src)
 
 /mob/living/simple_animal/hostile/jungle/mega_arachnid/add_cell_sample()
 	. = ..()

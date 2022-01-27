@@ -48,11 +48,11 @@
 	var/choose_tier = rand(1,100)
 	switch(choose_tier)
 		if(1 to 70)
-			hidden_item = pickweight(GLOB.tier1_reward)
+			hidden_item = pick_weight(GLOB.tier1_reward)
 		if(71 to 97)
-			hidden_item = pickweight(GLOB.tier2_reward)
+			hidden_item = pick_weight(GLOB.tier2_reward)
 		if(98 to 100)
-			hidden_item = pickweight(GLOB.tier3_reward)
+			hidden_item = pick_weight(GLOB.tier3_reward)
 
 /obj/item/xenoarch/strange_rock/proc/create_depth()
 	max_depth = rand(21, 100)
@@ -96,6 +96,7 @@
 		new hidden_item(get_turf(src))
 		qdel(src)
 		return BRUSH_UNCOVER
+	try_dig(1)
 	return BRUSH_NONE
 
 /obj/item/xenoarch/strange_rock/attackby(obj/item/I, mob/living/user, params)

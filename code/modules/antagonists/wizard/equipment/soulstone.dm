@@ -117,8 +117,8 @@
 			. += span_cult("This shard is spent; it is now just a creepy rock.")
 
 /obj/item/soulstone/Destroy() //Stops the shade from being qdel'd immediately and their ghost being sent back to the arrival shuttle.
-	for(var/mob/living/simple_animal/shade/A in src)
-		A.death()
+	for(var/mob/living/simple_animal/shade/shade in src)
+		INVOKE_ASYNC(shade, /mob/living/proc/death)
 	return ..()
 
 /obj/item/soulstone/proc/hot_potato(mob/living/user)
@@ -146,6 +146,9 @@
 		return
 	if(theme == THEME_HOLY && IS_CULTIST(user))
 		hot_potato(user)
+		return
+	if(HAS_TRAIT(M, TRAIT_NO_SOUL))
+		to_chat(user, span_warning("This body does not possess a soul to capture."))
 		return
 	log_combat(user, M, "captured [M.name]'s soul", src)
 	capture_soul(M, user)
@@ -213,6 +216,7 @@
 	occupant.death()
 
 	target_toolbox.name = "soulful toolbox"
+	target_toolbox.icon = 'icons/obj/storage.dmi'
 	target_toolbox.icon_state = "toolbox_blue_old"
 	target_toolbox.has_soul = TRUE
 	target_toolbox.has_latches = FALSE
@@ -383,32 +387,24 @@
 	newstruct.cancel_camera()
 
 
-/obj/item/soulstone/proc/init_shade(mob/living/carbon/human/dusted_victim, mob/user, message_user = FALSE, mob/shade_controller)
+/obj/item/soulstone/proc/init_shade(mob/living/carbon/human/victim, mob/user, message_user = FALSE, mob/shade_controller)
 	//SKYRAT EDIT ADDITION BEGIN - SOULSTONE_CHANGES
-	if(HAS_TRAIT_FROM(dusted_victim, TRAIT_SACRIFICED, "soulstoned"))
+	if(HAS_TRAIT_FROM(victim, TRAIT_SACRIFICED, "soulstoned"))
 		if(user)
 			to_chat(user, "This body has already been harvested!")
 		return
-	ADD_TRAIT(dusted_victim, TRAIT_SACRIFICED, "sacrificed")
-
-	if(!shade_controller)
-		shade_controller = dusted_victim
+	ADD_TRAIT(victim, TRAIT_SACRIFICED, "sacrificed")
 	//SKYRAT EDIT ADDITION END
-
-	/* SKYRAT EDIT REMOVAL BEGIN - SOULSTONE_CHANGES
-	new /obj/effect/decal/remains/human(dusted_victim.loc) //Spawns a skeleton
-	dusted_victim.stop_sound_channel(CHANNEL_HEARTBEAT)
-	dusted_victim.invisibility = INVISIBILITY_ABSTRACT
-	dusted_victim.dust_animation()
-	*/
-	//SKYRAT EDIT REMOVAL END
+	if(!shade_controller)
+		shade_controller = victim
+	victim.stop_sound_channel(CHANNEL_HEARTBEAT)
 	var/mob/living/simple_animal/shade/soulstone_spirit = new /mob/living/simple_animal/shade(src)
-	soulstone_spirit.AddComponent(/datum/component/return_on_death, dusted_victim) //SKYRAT EDIT ADDITION - SOULSTONE_CHANGES
+	soulstone_spirit.AddComponent(/datum/component/return_on_death, victim) //SKYRAT EDIT ADDITION - SOULSTONE_CHANGES
 	soulstone_spirit.AddComponent(/datum/component/soulstoned, src)
-	soulstone_spirit.name = "Shade of [dusted_victim.real_name]"
-	soulstone_spirit.real_name = "Shade of [dusted_victim.real_name]"
+	soulstone_spirit.name = "Shade of [victim.real_name]"
+	soulstone_spirit.real_name = "Shade of [victim.real_name]"
 	soulstone_spirit.key = shade_controller.key
-	soulstone_spirit.copy_languages(dusted_victim, LANGUAGE_MIND)//Copies the old mobs languages into the new mob holder.
+	soulstone_spirit.copy_languages(victim, LANGUAGE_MIND)//Copies the old mobs languages into the new mob holder.
 	if(user)
 		soulstone_spirit.copy_languages(user, LANGUAGE_MASTER)
 	soulstone_spirit.update_atom_languages()
@@ -418,7 +414,7 @@
 	if(user && IS_CULTIST(user))
 		soulstone_spirit.mind.add_antag_datum(/datum/antagonist/cult)
 	soulstone_spirit.cancel_camera()
-	name = "soulstone: Shade of [dusted_victim.real_name]"
+	name = "soulstone: Shade of [victim.real_name]"
 	switch(theme)
 		if(THEME_HOLY)
 			icon_state = "purified_soulstone2"
@@ -432,7 +428,8 @@
 		else if(role_check(user))
 			to_chat(soulstone_spirit, "Your soul has been captured! You are now bound to [user.real_name]'s will. Help [user.p_them()] succeed in [user.p_their()] goals at all costs.")
 		if(message_user)
-			to_chat(user, "[span_info("<b>Capture successful!</b>:")] [dusted_victim.real_name]'s soul has been ripped from [dusted_victim.p_their()] body and stored within [src].")
+			to_chat(user, "[span_info("<b>Capture successful!</b>:")] [victim.real_name]'s soul has been ripped from [victim.p_their()] body and stored within [src].")
+	// victim.dust() // SKYRAT EDIT - SOULSTONE_CHANGES
 
 
 /obj/item/soulstone/proc/getCultGhost(mob/living/carbon/victim, mob/user)
@@ -453,5 +450,4 @@
 		return FALSE
 	// victim.unequip_everything() /// SKYRAT REMOVAL - SOULSTONE_CHANGES
 	init_shade(victim, user, shade_controller = chosen_ghost)
-	// qdel(victim) /// SKYRAT REMOVAL - SOULSTONE_CHANGES
 	return TRUE

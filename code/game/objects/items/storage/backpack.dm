@@ -56,7 +56,7 @@
 	inhand_icon_state = "holdingpack"
 	resistance_flags = FIRE_PROOF
 	item_flags = NO_MAT_REDEMPTION
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 60, ACID = 50)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 60, ACID = 50)
 	component_type = /datum/component/storage/concrete/bluespace/bag_of_holding
 
 /obj/item/storage/backpack/holding/ComponentInitialize()
@@ -333,7 +333,7 @@
 	*/
 	var/contraband_list = list(/obj/item/storage/bag/ammo=4, /obj/item/storage/belt/utility/syndicate=1, /obj/item/storage/toolbox/syndicate=7, /obj/item/card/id/advanced/chameleon=6, /obj/item/storage/secure/briefcase/syndie=3, /obj/item/stack/telecrystal=2, /obj/item/storage/belt/military=12, /obj/item/storage/pill_bottle/aranesp=11, /obj/item/storage/pill_bottle/happy=12, /obj/item/storage/pill_bottle/stimulant=9, /obj/item/storage/pill_bottle/lsd=10, /obj/item/storage/fancy/cigarettes/cigpack_syndicate=8, /obj/item/storage/fancy/cigarettes/cigpack_shadyjims=10, /obj/item/reagent_containers/food/drinks/bottle/absinthe=12, /obj/item/storage/box/fireworks/dangerous=11, /obj/item/food/grown/cannabis/white=9, /obj/item/food/grown/cannabis=13, /obj/item/food/grown/cannabis/rainbow=8, /obj/item/food/grown/mushroom/libertycap=11, /obj/item/clothing/mask/gas/syndicate=10, /obj/item/vending_refill/donksoft=13, /obj/item/ammo_box/foambox/riot=11, /obj/item/soap/syndie=7)
 	for(var/i in 1 to 3)
-		var/contraband_type = pickweight(contraband_list)
+		var/contraband_type = pick_weight(contraband_list)
 		contraband_list -= contraband_type
 		new contraband_type(src)
 
@@ -657,12 +657,12 @@
 		new /obj/item/grenade/c4/x4(src)
 
 /obj/item/storage/backpack/duffelbag/syndie/firestarter
-	desc = "A large duffel bag containing a New Russian pyro backpack sprayer, Elite hardsuit, a Stechkin APS pistol, minibomb, ammo, and other equipment."
+	desc = "A large duffel bag containing a New Russian pyro backpack sprayer, Elite MODsuit, a Stechkin APS pistol, minibomb, ammo, and other equipment."
 
 /obj/item/storage/backpack/duffelbag/syndie/firestarter/PopulateContents()
 	new /obj/item/clothing/under/syndicate/soviet(src)
 	new /obj/item/watertank/op(src)
-	new /obj/item/clothing/suit/space/hardsuit/syndi/elite(src)
+	new /obj/item/mod/control/pre_equipped/elite(src)
 	new /obj/item/gun/ballistic/automatic/pistol/aps(src)
 	new /obj/item/ammo_box/magazine/m9mm_aps/fire(src)
 	new /obj/item/ammo_box/magazine/m9mm_aps/fire(src)
@@ -695,3 +695,4 @@
 	name = "police bag"
 	desc = "A large duffel bag for holding extra police gear."
 	slowdown = 0
+

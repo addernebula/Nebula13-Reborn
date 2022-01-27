@@ -119,6 +119,12 @@
 /area/ruin/space/has_grav/hotel/workroom/quarters
 	name = "Hotel Staff Quarters"
 // SKYRAT EDIT ADDITION END
+/area/ruin/space/has_grav/hotel/storeroom
+	name = "\improper Hotel Staff Storage"
+	icon_state = "crew_quarters"
+
+
+
 
 //Ruin of Derelict Oupost
 
@@ -377,6 +383,12 @@
 
 /area/ruin/space/djstation/solars
 	name = "\improper DJ Station Solars"
+	icon_state = "DJ"
+	area_flags = UNIQUE_AREA | AREA_USES_STARLIGHT
+	has_gravity = STANDARD_GRAVITY
+
+/area/ruin/space/djstation/service
+	name = "\improper DJ Station Service"
 	icon_state = "DJ"
 	has_gravity = STANDARD_GRAVITY
 

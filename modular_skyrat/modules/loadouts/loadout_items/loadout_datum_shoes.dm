@@ -6,8 +6,24 @@ GLOBAL_LIST_INIT(loadout_shoes, generate_loadout_items(/datum/loadout_item/shoes
 /datum/loadout_item/shoes
 	category = LOADOUT_ITEM_SHOES
 
-/datum/loadout_item/shoes/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE)
-	outfit.shoes = item_path
+/datum/loadout_item/shoes/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE, override_items = LOADOUT_OVERRIDE_BACKPACK)
+	if(override_items == LOADOUT_OVERRIDE_BACKPACK && !visuals_only)
+		if(outfit.shoes)
+			LAZYADD(outfit.backpack_contents, outfit.shoes)
+		outfit.shoes = item_path
+	else
+		outfit.shoes = item_path
+
+
+//christmas, after that remove them
+/datum/loadout_item/shoes/christmas
+	name = "Red Christmas Boots"
+	item_path = /obj/item/clothing/shoes/winterboots/christmas
+
+/datum/loadout_item/shoes/christmas/green
+	name = "Green Christmas Boots"
+	item_path = /obj/item/clothing/shoes/winterboots/christmas/green
+//every christmas is last christmas
 
 /datum/loadout_item/shoes/jackboots
 	name = "Jackboots"
@@ -69,7 +85,6 @@ GLOBAL_LIST_INIT(loadout_shoes, generate_loadout_items(/datum/loadout_item/shoes
 /datum/loadout_item/shoes/greyscale_sneakers
 	name = "Greyscale Sneakers"
 	item_path = /obj/item/clothing/shoes/sneakers
-	can_be_greyscale = TRUE
 
 /datum/loadout_item/shoes/black_sneakers
 	name = "Black Sneakers"
@@ -106,6 +121,10 @@ GLOBAL_LIST_INIT(loadout_shoes, generate_loadout_items(/datum/loadout_item/shoes
 /datum/loadout_item/shoes/white_sneakers
 	name = "White Sneakers"
 	item_path = /obj/item/clothing/shoes/sneakers/white
+
+/datum/loadout_item/shoes/griffin
+	name = "Griffon Boots"
+	item_path = /obj/item/clothing/shoes/griffin
 
 /datum/loadout_item/shoes/sandals
 	name = "Sandals"
@@ -151,10 +170,40 @@ GLOBAL_LIST_INIT(loadout_shoes, generate_loadout_items(/datum/loadout_item/shoes
 	name = "Green Snakeskin Shoes"
 	item_path = /obj/item/clothing/shoes/discoshoes
 
-//shoes
 /datum/loadout_item/shoes/dominaheels
 	name = "Dominant heels"
 	item_path = /obj/item/clothing/shoes/dominaheels
+
+// Job Restricted
+/datum/loadout_item/shoes/jester
+	name = "Jester shoes"
+	item_path = /obj/item/clothing/shoes/clown_shoes/jester
+	restricted_roles = list(JOB_CLOWN)
+
+//Families Gear
+/datum/loadout_item/shoes/deckers
+	name = "Deckers Shoes"
+	item_path = /obj/item/clothing/shoes/deckers
+
+/datum/loadout_item/shoes/morningstar
+	name = "Morningstar Shoes"
+	item_path = /obj/item/clothing/shoes/morningstar
+
+/datum/loadout_item/shoes/saints
+	name = "Saints Shoes"
+	item_path = /obj/item/clothing/shoes/saints
+
+/datum/loadout_item/shoes/phantom
+	name = "Phantom Shoes"
+	item_path = /obj/item/clothing/shoes/phantom
+
+/datum/loadout_item/shoes/sybil
+	name = "Sybil Shoes"
+	item_path = /obj/item/clothing/shoes/sybil_slickers
+
+/datum/loadout_item/shoes/basil
+	name = "Basil Shoes"
+	item_path = /obj/item/clothing/shoes/basil_boys
 
 //Donator shoes here
 /datum/loadout_item/shoes/donator

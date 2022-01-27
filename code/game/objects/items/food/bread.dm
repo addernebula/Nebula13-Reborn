@@ -54,6 +54,9 @@
 	. = ..()
 	AddComponent(/datum/component/customizable_reagent_holder, null, CUSTOM_INGREDIENT_ICON_STACK)
 
+/obj/item/food/breadslice/plain/MakeGrillable()
+	AddComponent(/datum/component/grillable, /obj/item/food/griddle_toast, rand(15 SECONDS, 25 SECONDS), TRUE, TRUE)
+
 /obj/item/food/breadslice/moldy
 	name = "moldy 'bread' slice"
 	desc = "Entire stations have been ripped apart over arguing whether this is still good to eat."
@@ -69,7 +72,7 @@
 
 /obj/item/food/breadslice/moldy/bacteria/Initialize(mapload)
 	. = ..()
-	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MOLD, CELL_VIRUS_TABLE_GENERIC, rand(2,4), 25)
+	AddElement(/datum/element/swabable, CELL_LINE_TABLE_MOLD, CELL_VIRUS_TABLE_GENERIC, rand(2, 4), 25)
 
 
 /obj/item/food/bread/meat
@@ -91,6 +94,25 @@
 	icon_state = "meatbreadslice"
 	foodtypes = GRAIN | MEAT
 	food_reagents = list(/datum/reagent/consumable/nutriment = 4, /datum/reagent/consumable/nutriment/vitamin = 2, /datum/reagent/consumable/nutriment/protein = 2.4)
+
+/obj/item/food/bread/sausage
+	name = "sausagebread loaf"
+	desc = "Dont think too much about it."
+	icon_state = "sausagebread"
+	foodtypes = GRAIN | MEAT
+	food_reagents = list(/datum/reagent/consumable/nutriment = 20, /datum/reagent/consumable/nutriment/vitamin = 10, /datum/reagent/consumable/nutriment/protein = 12)
+	tastes = list("bread" = 10, "meat" = 10)
+
+/obj/item/food/bread/sausage/MakeProcessable()
+	AddElement(/datum/element/processable, TOOL_KNIFE, /obj/item/food/breadslice/sausage, 5, 30)
+
+/obj/item/food/breadslice/sausage
+	name = "sausagebread slice"
+	desc = "A slice of delicious sausagebread."
+	icon_state = "sausagebreadslice"
+	foodtypes = GRAIN | MEAT
+	food_reagents = list(/datum/reagent/consumable/nutriment = 4, /datum/reagent/consumable/nutriment/vitamin = 2, /datum/reagent/consumable/nutriment/protein = 2.4)
+	tastes = list("bread" = 10, "meat" = 10)
 
 /obj/item/food/bread/xenomeat
 	name = "xenomeatbread loaf"
@@ -309,19 +331,19 @@
 /obj/item/food/deepfryholder/proc/fry(cook_time = 30)
 	switch(cook_time)
 		if(0 to 15)
-			add_atom_colour(rgb(166,103,54), FIXED_COLOUR_PRIORITY)
+			add_atom_colour(rgb(166, 103, 54), FIXED_COLOUR_PRIORITY)
 			name = "lightly-fried [name]"
 			desc = "[desc] It's been lightly fried in a deep fryer."
 		if(16 to 49)
-			add_atom_colour(rgb(103,63,24), FIXED_COLOUR_PRIORITY)
+			add_atom_colour(rgb(103, 63, 24), FIXED_COLOUR_PRIORITY)
 			name = "fried [name]"
 			desc = "[desc] It's been fried, increasing its tastiness value by [rand(1, 75)]%."
 		if(50 to 59)
-			add_atom_colour(rgb(63,23,4), FIXED_COLOUR_PRIORITY)
+			add_atom_colour(rgb(63, 23, 4), FIXED_COLOUR_PRIORITY)
 			name = "deep-fried [name]"
 			desc = "[desc] Deep-fried to perfection."
 		if(60 to INFINITY)
-			add_atom_colour(rgb(33,19,9), FIXED_COLOUR_PRIORITY)
+			add_atom_colour(rgb(33, 19, 9), FIXED_COLOUR_PRIORITY)
 			name = "\proper the physical manifestation of the very concept of fried foods"
 			desc = "A heavily-fried... something. Who can tell anymore?"
 	foodtypes |= FRIED

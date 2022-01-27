@@ -17,7 +17,7 @@
 	turns_per_move = 8
 	obj_damage = 0
 	environment_smash = ENVIRONMENT_SMASH_NONE
-	move_to_delay = 15
+	move_to_delay = 7.5
 	response_help_continuous = "pets"
 	response_help_simple = "pet"
 	response_disarm_continuous = "gently pushes aside"
@@ -47,7 +47,7 @@
 /mob/living/simple_animal/hostile/asteroid/gutlunch/Initialize(mapload)
 	. = ..()
 	if(wanted_objects.len)
-		AddComponent(/datum/component/udder, /obj/item/udder/gutlunch, /mob.proc/regenerate_icons, /mob.proc/regenerate_icons)
+		AddComponent(/datum/component/udder, /obj/item/udder/gutlunch, CALLBACK(src, .proc/regenerate_icons), CALLBACK(src, .proc/regenerate_icons))
 	ADD_TRAIT(src, TRAIT_VENTCRAWLER_ALWAYS, INNATE_TRAIT)
 
 /mob/living/simple_animal/hostile/asteroid/gutlunch/CanAttack(atom/the_target) // Gutlunch-specific version of CanAttack to handle stupid stat_exclusive = true crap so we don't have to do it for literally every single simple_animal/hostile except the two that spawn in lavaland

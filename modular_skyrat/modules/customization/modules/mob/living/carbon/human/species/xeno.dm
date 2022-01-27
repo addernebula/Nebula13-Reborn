@@ -3,7 +3,7 @@
 	name = "Xenomorph Hybrid"
 	id = SPECIES_XENO
 	say_mod = "hisses"
-	default_color = "00FF00"
+	default_color = "#00FF00"
 	species_traits = list(
 		MUTCOLORS,
 		EYECOLOR,
@@ -13,7 +13,8 @@
 	)
 	inherent_traits = list(
 		TRAIT_ADVANCEDTOOLUSER,
-		TRAIT_CAN_STRIP
+		TRAIT_CAN_STRIP,
+		TRAIT_CAN_USE_FLIGHT_POTION,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mutant_bodyparts = list()
@@ -25,6 +26,7 @@
 		"taur" = "None"
 	)
 	attack_verb = "slash"
+	attack_effect = ATTACK_EFFECT_CLAW
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'
 	liked_food = MEAT

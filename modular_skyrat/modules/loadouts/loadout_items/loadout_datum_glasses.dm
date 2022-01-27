@@ -6,13 +6,18 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 /datum/loadout_item/glasses
 	category = LOADOUT_ITEM_GLASSES
 
-/datum/loadout_item/glasses/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE)
-	if(outfit.glasses)
-		LAZYADD(outfit.backpack_contents, outfit.glasses)
-	outfit.glasses = item_path
+/datum/loadout_item/glasses/insert_path_into_outfit(datum/outfit/outfit, mob/living/carbon/human/equipper, visuals_only = FALSE, override_items = LOADOUT_OVERRIDE_BACKPACK)
+	if(override_items == LOADOUT_OVERRIDE_BACKPACK && !visuals_only)
+		if(outfit.glasses)
+			LAZYADD(outfit.backpack_contents, outfit.glasses)
+		outfit.glasses = item_path
+	else
+		outfit.glasses = item_path
 
 /datum/loadout_item/glasses/post_equip_item(datum/preferences/preference_source, mob/living/carbon/human/equipper)
 	var/obj/item/clothing/glasses/equipped_glasses = locate(item_path) in equipper.get_equipped_items()
+	if (!equipped_glasses)
+		return
 	if(equipped_glasses.glass_colour_type)
 		equipper.update_glasses_color(equipped_glasses, TRUE)
 	if(equipped_glasses.tint)
@@ -43,10 +48,6 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 	name = "Jamjar Glasses"
 	item_path = /obj/item/clothing/glasses/regular/jamjar
 
-/datum/loadout_item/glasses/black_blindfold
-	name = "Black Blindfold"
-	item_path = /obj/item/clothing/glasses/blindfold
-
 /datum/loadout_item/glasses/cold_glasses
 	name = "Cold Glasses"
 	item_path = /obj/item/clothing/glasses/cold
@@ -71,18 +72,17 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 	name = "Red Glasses"
 	item_path = /obj/item/clothing/glasses/red
 
-/datum/loadout_item/glasses/welding_goggles
-	name = "Welding Goggles"
-	item_path = /obj/item/clothing/glasses/welding
-
 /datum/loadout_item/glasses/eyepatch
 	name = "Eyepatch"
 	item_path = /obj/item/clothing/glasses/eyepatch
 
-
 /datum/loadout_item/glasses/fakeblindfold
 	name = "Fake Blindfold"
 	item_path = /obj/item/clothing/glasses/trickblindfold
+
+/datum/loadout_item/glasses/blindfold
+	name = "Blindfold"
+	item_path = /obj/item/clothing/glasses/blindfold
 
 /datum/loadout_item/glasses/monocle
 	name = "Monocle"
@@ -111,38 +111,54 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 /datum/loadout_item/glasses/medicpatch
 	name = "Medical Eyepatch"
 	item_path = /obj/item/clothing/glasses/hud/eyepatch/med
-	restricted_roles = list("Medical Doctor", "Chief Medical Officer", "Geneticist", "Chemist", "Virologist", "Paramedic")
+	restricted_roles = list(JOB_MEDICAL_DOCTOR, JOB_CHIEF_MEDICAL_OFFICER, JOB_GENETICIST, JOB_CHEMIST, JOB_VIROLOGIST, JOB_PARAMEDIC)
 
 /datum/loadout_item/glasses/robopatch
 	name = "Diagnostic Eyepatch"
 	item_path = /obj/item/clothing/glasses/hud/eyepatch/diagnostic
-	restricted_roles = list("Scientist", "Roboticist", "Geneticist", "Research Director", "Vanguard Operative")
+	restricted_roles = list(JOB_SCIENTIST, JOB_ROBOTICIST, JOB_GENETICIST, JOB_RESEARCH_DIRECTOR, JOB_VANGUARD_OPERATIVE)
 /datum/loadout_item/glasses/scipatch
 	name = "Science Eyepatch"
 	item_path = /obj/item/clothing/glasses/hud/eyepatch/sci
-	restricted_roles = list("Scientist", "Roboticist", "Geneticist", "Research Director", "Chemist", "Vanguard Operative")
+	restricted_roles = list(JOB_SCIENTIST, JOB_ROBOTICIST, JOB_GENETICIST, JOB_RESEARCH_DIRECTOR, JOB_CHEMIST, JOB_VANGUARD_OPERATIVE)
 
 /datum/loadout_item/glasses/sechud
 	name = "Security Hud"
 	item_path = /obj/item/clothing/glasses/hud/security
-	restricted_roles = list("Security Officer", "Security Sergeant", "Warden", "Head of Security", "Civil Disputes Officer")
+	restricted_roles = list(JOB_SECURITY_OFFICER, JOB_SECURITY_SERGEANT, JOB_WARDEN, JOB_HEAD_OF_SECURITY, JOB_CIVIL_DISPUTES_OFFICER)
 
 /datum/loadout_item/glasses/secpatch
 	name = "Security Eyepatch Hud"
 	item_path = /obj/item/clothing/glasses/hud/eyepatch/sec
-	restricted_roles = list("Security Officer", "Security Sergeant", "Warden", "Head of Security", "Civil Disputes Officer")
+	restricted_roles = list(JOB_SECURITY_OFFICER, JOB_SECURITY_SERGEANT, JOB_WARDEN, JOB_HEAD_OF_SECURITY, JOB_CIVIL_DISPUTES_OFFICER)
 
 /datum/loadout_item/glasses/sechud_glasses
 	name = "Prescription Security Hud"
 	item_path = /obj/item/clothing/glasses/hud/security/prescription
-	restricted_roles = list("Security Officer", "Warden", "Head of Security")
+	restricted_roles = list(JOB_SECURITY_OFFICER, JOB_WARDEN, JOB_HEAD_OF_SECURITY)
 
 /datum/loadout_item/glasses/medhud_glasses
 	name = "Prescription Medical Hud"
 	item_path = /obj/item/clothing/glasses/hud/health/prescription
-	restricted_roles = list("Medical Doctor", "Chief Medical Officer", "Geneticist", "Chemist", "Virologist", "Paramedic")
+	restricted_roles = list(JOB_MEDICAL_DOCTOR, JOB_CHIEF_MEDICAL_OFFICER, JOB_GENETICIST, JOB_CHEMIST, JOB_VIROLOGIST, JOB_PARAMEDIC)
 
 /datum/loadout_item/glasses/diaghud_glasses
 	name = "Prescription Diagnostic Hud"
 	item_path = /obj/item/clothing/glasses/hud/diagnostic/prescription
-	restricted_roles = list("Research Director","Scientist", "Roboticist")
+	restricted_roles = list(JOB_RESEARCH_DIRECTOR,JOB_SCIENTIST, JOB_ROBOTICIST)
+
+//Families Gear
+/datum/loadout_item/glasses/osi
+	name = "OSI Glasses"
+	item_path = /obj/item/clothing/glasses/osi
+
+/datum/loadout_item/glasses/phantom
+	name = "Phantom Glasses"
+	item_path = /obj/item/clothing/glasses/phantom
+
+/datum/loadout_item/glasses/donator
+	donator_only = TRUE
+
+/datum/loadout_item/glasses/donator/fake_sunglasses
+	name = "Fake Sunglasses"
+	item_path = /obj/item/clothing/glasses/fake_sunglasses

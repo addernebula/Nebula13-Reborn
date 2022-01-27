@@ -5,7 +5,7 @@
 // You do not need to raise this if you are adding new values that have sane defaults.
 // Only raise this value when changing the meaning/format/name/layout of an existing value
 // where you would want the updater procs below to run
-#define SAVEFILE_VERSION_MAX 41
+#define SAVEFILE_VERSION_MAX 42
 
 /*
 SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Carn
@@ -96,9 +96,13 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 	if (current_version < 41)
 		migrate_preferences_to_tgui_prefs_menu()
 
-/datum/preferences/proc/update_character(current_version)
+/datum/preferences/proc/update_character(current_version, savefile/savefile)
 	if (current_version < 41)
 		migrate_character_to_tgui_prefs_menu()
+
+	if (current_version < 42)
+		// migrate_body_types(savefile) // SKYRAT EDIT - This'll fuck up savefiles
+		migrate_mentor() // SKYRAT EDIT - Make mentors alive again
 
 /// checks through keybindings for outdated unbound keys and updates them
 /datum/preferences/proc/check_keybindings()
@@ -188,7 +192,7 @@ SAVEFILE UPDATING/VERSIONING - 'Simplified', or rather, more coder-friendly ~Car
 		var/datum/outfit/path = text2path(typetext)
 		if(ispath(path)) //whatever typepath fails this check probably doesn't exist anymore
 			parsed_favs += path
-	favorite_outfits = uniqueList(parsed_favs)
+	favorite_outfits = unique_list(parsed_favs)
 
 	// Custom hotkeys
 	READ_FILE(S["key_bindings"], key_bindings)

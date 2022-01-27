@@ -3,7 +3,7 @@
 /obj/effect/particle_effect/water
 	name = "water"
 	icon_state = "extinguish"
-	pass_flags = PASSTABLE | PASSMACHINE | PASSSTRUCTURE | PASSGRILLE | PASSBLOB
+	pass_flags = PASSTABLE | PASSMACHINE | PASSSTRUCTURE | PASSGRILLE | PASSBLOB | PASSVEHICLE
 	var/life = 15
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 
@@ -24,6 +24,17 @@
 	if(A.reagents)
 		A.reagents.expose_temperature(-25)
 	return ..()
+
+///Extinguisher snowflake
+/obj/effect/particle_effect/water/extinguisher
+
+/obj/effect/particle_effect/water/extinguisher/Move()
+	. = ..()
+	if(!reagents)
+		return
+	reagents.expose(get_turf(src))
+	for(var/atom/thing as anything in get_turf(src))
+		reagents.expose(thing)
 
 
 /////////////////////////////////////////////

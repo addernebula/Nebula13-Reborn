@@ -69,6 +69,48 @@
 		inventory_back = null
 	return ..()
 
+/mob/living/simple_animal/pet/dog/corgi/deadchat_plays(mode = ANARCHY_MODE, cooldown = 12 SECONDS)
+	. = AddComponent(/datum/component/deadchat_control/cardinal_movement, mode, list(
+		"speak" = CALLBACK(src, .proc/handle_automated_speech, TRUE),
+		"wear_hat" = CALLBACK(src, .proc/find_new_hat),
+		"drop_hat" = CALLBACK(src, .proc/drop_hat),
+		"spin" = CALLBACK(src, /mob.proc/emote, "spin")), cooldown, CALLBACK(src, .proc/stop_deadchat_plays))
+
+	if(. == COMPONENT_INCOMPATIBLE)
+		return
+
+	stop_automated_movement = TRUE
+
+///Deadchat plays command that picks a new hat for Ian.
+/mob/living/simple_animal/pet/dog/corgi/proc/find_new_hat()
+	if(!isturf(loc))
+		return
+	var/list/possible_headwear = list()
+	for(var/obj/item/item in loc)
+		if(ispath(item.dog_fashion, /datum/dog_fashion/head))
+			possible_headwear += item
+	if(!length(possible_headwear))
+		for(var/obj/item/item in orange(1))
+			if(ispath(item.dog_fashion, /datum/dog_fashion/head) && CanReach(item))
+				possible_headwear += item
+	if(!length(possible_headwear))
+		return
+	if(inventory_head)
+		inventory_head.forceMove(drop_location())
+		inventory_head = null
+	place_on_head(pick(possible_headwear))
+	visible_message(span_notice("[src] puts [inventory_head] on [p_their()] own head, somehow."))
+
+///Deadchat plays command that drops the current hat off Ian.
+/mob/living/simple_animal/pet/dog/corgi/proc/drop_hat()
+	if(!inventory_head)
+		return
+	visible_message(span_notice("[src] vigorously shakes [p_their()] head, dropping [inventory_head] to the ground."))
+	inventory_head.forceMove(drop_location())
+	inventory_head = null
+	update_corgi_fluff()
+	regenerate_icons()
+
 /mob/living/simple_animal/pet/dog/corgi/handle_atom_del(atom/A)
 	if(A == inventory_head)
 		inventory_head = null
@@ -79,7 +121,6 @@
 		update_corgi_fluff()
 		regenerate_icons()
 	return ..()
-
 
 /mob/living/simple_animal/pet/dog/pug
 	name = "\improper pug"
@@ -100,6 +141,8 @@
 /mob/living/simple_animal/pet/dog/pug/mcgriff
 	name = "McGriff"
 	desc = "This dog can tell something smells around here, and that something is CRIME!"
+	gold_core_spawnable = NO_SPAWN
+	unique_pet = TRUE
 
 /mob/living/simple_animal/pet/dog/bullterrier
 	name = "\improper bull terrier"
@@ -169,7 +212,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 
 	corgi_source.place_on_head(equipping, user)
 
-/datum/strippable_item/corgi_head/finish_unequip(atom/source, obj/item/equipping, mob/user)
+/datum/strippable_item/corgi_head/finish_unequip(atom/source, mob/user)
 	var/mob/living/simple_animal/pet/dog/corgi/corgi_source = source
 	if (!istype(corgi_source))
 		return
@@ -417,6 +460,7 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 	real_name = "Ian" //Intended to hold the name without altering it.
 	gender = MALE
 	desc = "He's the HoP's beloved corgi."
+	icon = 'modular_skyrat/modules/chadian/icons/ian.dmi' //SKYRAT EDIT CHANGE
 	response_help_continuous = "pets"
 	response_help_simple = "pet"
 	response_disarm_continuous = "bops"
@@ -449,11 +493,15 @@ GLOBAL_LIST_INIT(strippable_corgi_items, create_strippable_list(list(
 		desc = "At a ripe old age of [record_age], Ian's not as spry as he used to be, but he'll always be the HoP's beloved corgi." //RIP
 		turns_per_move = 20
 
+		old = TRUE //SKYRAT EDIT ADDITION
+
+/* SKYRAT EDIT REMOVAL
 /mob/living/simple_animal/pet/dog/corgi/ian/Life(delta_time = SSMOBS_DT, times_fired)
 	if(!stat && SSticker.current_state == GAME_STATE_FINISHED && !memory_saved)
 		Write_Memory(FALSE)
 		memory_saved = TRUE
 	..()
+*/
 
 /mob/living/simple_animal/pet/dog/corgi/ian/death()
 	if(!memory_saved)

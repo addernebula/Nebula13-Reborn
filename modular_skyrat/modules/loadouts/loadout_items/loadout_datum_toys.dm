@@ -14,7 +14,6 @@ GLOBAL_LIST_INIT(loadout_toys, generate_loadout_items(/datum/loadout_item/toys))
 
 /datum/loadout_item/toys/lizard_greyscale
 	name = "Greyscale Lizard Plush"
-	can_be_greyscale = TRUE
 	item_path = /obj/item/toy/plush/lizard_plushie
 
 /datum/loadout_item/toys/lizard_random
@@ -29,7 +28,7 @@ GLOBAL_LIST_INIT(loadout_toys, generate_loadout_items(/datum/loadout_item/toys))
 /datum/loadout_item/toys/narsie
 	name = "Nar'sie Plush"
 	item_path = /obj/item/toy/plush/narplush
-	restricted_roles = list("Chaplain")
+	restricted_roles = list(JOB_CHAPLAIN)
 
 /datum/loadout_item/toys/nukie
 	name = "Nukie Plush"
@@ -46,7 +45,7 @@ GLOBAL_LIST_INIT(loadout_toys, generate_loadout_items(/datum/loadout_item/toys))
 /datum/loadout_item/toys/ratvar
 	name = "Ratvar Plush"
 	item_path = /obj/item/toy/plush/ratplush
-	restricted_roles = list("Chaplain")
+	restricted_roles = list(JOB_CHAPLAIN)
 
 /datum/loadout_item/toys/rouny
 	name = "Rouny Plush"
@@ -177,6 +176,10 @@ GLOBAL_LIST_INIT(loadout_toys, generate_loadout_items(/datum/loadout_item/toys))
 	name = "Sneed plushie"
 	item_path = /obj/item/toy/plush/seaduplush
 
+/datum/loadout_item/toys/lizzyplush
+	name = "Odd yoga lizzy plushie"
+	item_path = /obj/item/toy/plush/lizzyplush
+
 /datum/loadout_item/toys/card_binder
 	name = "Card Binder"
 	item_path = /obj/item/storage/card_binder
@@ -192,6 +195,10 @@ GLOBAL_LIST_INIT(loadout_toys, generate_loadout_items(/datum/loadout_item/toys))
 /datum/loadout_item/toys/wizoff_deck
 	name = "Wizoff Deck"
 	item_path = /obj/item/toy/cards/deck/wizoff
+
+/datum/loadout_item/toys/tarot
+	name = "Tarot Card Deck"
+	item_path = /obj/item/toy/cards/deck/tarot
 
 /datum/loadout_item/toys/d1
 	name = "D1"

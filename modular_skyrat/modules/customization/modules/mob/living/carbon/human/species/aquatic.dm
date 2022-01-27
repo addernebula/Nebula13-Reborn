@@ -1,7 +1,7 @@
 /datum/species/aquatic
 	name = "Aquatic"
 	id = SPECIES_AQUATIC
-	default_color = "4B4B4B"
+	default_color = "#4B4B4B"
 	species_traits = list(
 		MUTCOLORS,
 		EYECOLOR,
@@ -13,7 +13,8 @@
 	)
 	inherent_traits = list(
 		TRAIT_ADVANCEDTOOLUSER,
-		TRAIT_CAN_STRIP
+		TRAIT_CAN_STRIP,
+		TRAIT_CAN_USE_FLIGHT_POTION,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mutant_bodyparts = list()
@@ -26,10 +27,13 @@
 		"wings" = "None"
 	)
 	attack_verb = "slash"
+	attack_effect = ATTACK_EFFECT_CLAW
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'
 	payday_modifier = 0.75
-	liked_food = GROSS | MEAT | FRIED
+	liked_food = SEAFOOD | MEAT | FRUIT
+	disliked_food = NUTS | CLOTH | DAIRY
+	toxic_food = TOXIC
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	limbs_icon = 'modular_skyrat/master_files/icons/mob/species/akula_parts_greyscale.dmi'
 	limbs_id = SPECIES_AKULA
@@ -42,20 +46,20 @@
 	//Choose from a variety of sharkish colors, with a whiter secondary and tertiary
 	switch(random)
 		if(1)
-			main_color = "689"
-			second_color = "BCD"
+			main_color = "#668899"
+			second_color = "#BBCCDD"
 		if(2)
-			main_color = "345"
-			second_color = "DDE"
+			main_color = "#334455"
+			second_color = "#DDDDEE"
 		if(3)
-			main_color = "456"
-			second_color = "DDE"
+			main_color = "#445566"
+			second_color = "#DDDDEE"
 		if(4)
-			main_color = "665"
-			second_color = "DDE"
+			main_color = "#666655"
+			second_color = "#DDDDEE"
 		if(5)
-			main_color = "444"
-			second_color = "DDE"
+			main_color = "#444444"
+			second_color = "#DDDDEE"
 	returned["mcolor"] = main_color
 	returned["mcolor2"] = second_color
 	returned["mcolor3"] = second_color

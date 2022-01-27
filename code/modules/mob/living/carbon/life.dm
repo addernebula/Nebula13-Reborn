@@ -41,31 +41,6 @@
 
 	check_cremation(delta_time, times_fired)
 
-	//Updates the number of stored chemicals for powers
-	handle_changeling(delta_time, times_fired)
-
-	if(staminaloss) //SKYRAT EDIT ADDITION bEGIN
-		//Stamina regeneration: Regens faster, the more health you have, and the more staminaloss you have
-		var/flat = STAMINA_STATIC_REGEN_FLAT
-		if(HAS_TRAIT_FROM(src, TRAIT_INCAPACITATED, STAMINA))
-			flat += STAMINA_EXTRA_FLAT_IN_CRIT
-		adjustStaminaLoss(-(flat+(staminaloss/STAMINALOSS_REGEN_COEFF)) * (STAMINA_STATIC_REGEN_MULTIPLIER + (max(health/maxHealth, 0))))
-		if(staminaloss > STAMINA_THRESHOLD_MESSAGE_ACHE && world.time > next_stamina_message && stat != DEAD)
-			next_stamina_message = world.time + STAMINA_MESSAGE_COOLDOWN
-			switch(FLOOR(staminaloss,1))
-				if(STAMINA_THRESHOLD_MESSAGE_ACHE to STAMINA_THRESHOLD_MESSAGE_MILD)
-					to_chat(src, "<span class='warning'>You feel winded.</span>") //SKYRAT EDIT Grammar
-				if(STAMINA_THRESHOLD_MESSAGE_MILD to STAMINA_THRESHOLD_MESSAGE_MEDIUM)
-					to_chat(src, "<span class='warning'>You feel tired!</span>") //SKYRAT EDIT Grammar
-				if(STAMINA_THRESHOLD_MESSAGE_MEDIUM to STAMINA_THRESHOLD_MESSAGE_HIGH)
-					to_chat(src, "<span class='warning'>You have trouble standing on your legs!</span>") //SKYRAT EDIT Grammar
-				if(STAMINA_THRESHOLD_MESSAGE_HIGH to STAMINA_THRESHOLD_MESSAGE_SEVERE)
-					to_chat(src, "<span class='warning'>You feel worn-out!</span>")
-				if(STAMINA_THRESHOLD_MESSAGE_SEVERE to STAMINA_THRESHOLD_MESSAGE_OHGOD)
-					to_chat(src, "<span class='warning'>You feel exhausted!</span>")
-				if(STAMINA_THRESHOLD_MESSAGE_OHGOD to INFINITY)
-					to_chat(src, "<span class='warning'>You feel fatigued!</span>")
-					//SKYRAT EDIT END
 	if(. && mind) //. == not dead
 		for(var/key in mind.addiction_points)
 			var/datum/addiction/addiction = SSaddiction.all_addictions[key]
@@ -304,15 +279,13 @@
 		else if(bz_partialpressure > 0.01)
 			hallucination += 5
 
-	//TRITIUM
-	if(breath_gases[/datum/gas/tritium])
-		var/tritium_partialpressure = (breath_gases[/datum/gas/tritium][MOLES]/breath.total_moles())*breath_pressure
-		radiation += tritium_partialpressure/10
-
-	//NITRYL
-	if(breath_gases[/datum/gas/nitryl])
-		var/nitryl_partialpressure = (breath_gases[/datum/gas/nitryl][MOLES]/breath.total_moles())*breath_pressure
-		adjustFireLoss(nitryl_partialpressure/4)
+	//NITRIUM
+	if(breath_gases[/datum/gas/nitrium])
+		var/nitrium_partialpressure = (breath_gases[/datum/gas/nitrium][MOLES]/breath.total_moles())*breath_pressure
+		if(nitrium_partialpressure > 0.5)
+			adjustFireLoss(nitrium_partialpressure * 0.15)
+		if(nitrium_partialpressure > 5)
+			adjustToxLoss(nitrium_partialpressure * 0.05)
 
 	//FREON
 	if(breath_gases[/datum/gas/freon])
@@ -389,21 +362,15 @@
 	return
 
 /mob/living/carbon/proc/handle_bodyparts(delta_time, times_fired)
-	return //SKYRAT EDIT ADDITION
-	/* SKYRAT EDIT REMVOAL
-/mob/living/carbon/proc/handle_bodyparts(delta_time, times_fired)
 	var/stam_regen = FALSE
 	if(stam_regen_start_time <= world.time)
 		stam_regen = TRUE
 		if(HAS_TRAIT_FROM(src, TRAIT_INCAPACITATED, STAMINA))
 			. |= BODYPART_LIFE_UPDATE_HEALTH //make sure we remove the stamcrit
-	*/
-	/*
 	for(var/I in bodyparts)
 		var/obj/item/bodypart/BP = I
 		if(BP.needs_processing)
 			. |= BP.on_life(delta_time, times_fired, stam_regen)
-	*/ //SKYRAT EDIT END
 
 /mob/living/carbon/proc/handle_organs(delta_time, times_fired)
 	if(stat != DEAD)
@@ -415,8 +382,8 @@
 		if(reagents.has_reagent(/datum/reagent/toxin/formaldehyde, 1) || reagents.has_reagent(/datum/reagent/cryostylane)) // No organ decay if the body contains formaldehyde.
 			return
 		for(var/V in internal_organs)
-			var/obj/item/organ/O = V
-			O.on_death(delta_time, times_fired) //Needed so organs decay while inside the body.
+			var/obj/item/organ/organ = V
+			organ.on_death(delta_time, times_fired) //Needed so organs decay while inside the body.
 
 /mob/living/carbon/handle_diseases(delta_time, times_fired)
 	for(var/thing in diseases)
@@ -433,57 +400,42 @@
 		if(W.processes) // meh
 			W.handle_process(delta_time, times_fired)
 
-//todo generalize this and move hud out
-/mob/living/carbon/proc/handle_changeling(delta_time, times_fired)
-	if(mind && hud_used?.lingchemdisplay)
-		var/datum/antagonist/changeling/changeling = mind.has_antag_datum(/datum/antagonist/changeling)
-		if(changeling)
-			changeling.regenerate(delta_time, times_fired)
-			hud_used.lingchemdisplay.invisibility = 0
-			hud_used.lingchemdisplay.maptext = MAPTEXT("<div align='center' valign='middle' style='position:relative; top:0px; left:6px'><font color='#dd66dd'>[round(changeling.chem_charges)]</font></div>")
-		else
-			hud_used.lingchemdisplay.invisibility = INVISIBILITY_ABSTRACT
+/mob/living/carbon/handle_mutations(time_since_irradiated, delta_time, times_fired)
+	if(!dna?.temporary_mutations.len)
+		return
 
-
-/mob/living/carbon/handle_mutations_and_radiation(delta_time, times_fired)
-	if(dna?.temporary_mutations.len)
-		for(var/mut in dna.temporary_mutations)
-			if(dna.temporary_mutations[mut] < world.time)
-				if(mut == UI_CHANGED)
-					if(dna.previous["UI"])
-						dna.unique_identity = merge_text(dna.unique_identity,dna.previous["UI"])
-						updateappearance(mutations_overlay_update=1)
-						dna.previous.Remove("UI")
-					dna.temporary_mutations.Remove(mut)
-					continue
-				if(mut == UF_CHANGED)
-					if(dna.previous["UF"])
-						dna.unique_features = merge_text(dna.unique_features,dna.previous["UF"])
-						updateappearance(mutcolor_update=1, mutations_overlay_update=1)
-						dna.previous.Remove("UF")
-					dna.temporary_mutations.Remove(mut)
-					continue
-				if(mut == UE_CHANGED)
-					if(dna.previous["name"])
-						real_name = dna.previous["name"]
-						name = real_name
-						dna.previous.Remove("name")
-					if(dna.previous["UE"])
-						dna.unique_enzymes = dna.previous["UE"]
-						dna.previous.Remove("UE")
-					if(dna.previous["blood_type"])
-						dna.blood_type = dna.previous["blood_type"]
-						dna.previous.Remove("blood_type")
-					dna.temporary_mutations.Remove(mut)
-					continue
-		for(var/datum/mutation/human/HM in dna.mutations)
-			if(HM?.timed)
-				dna.remove_mutation(HM.type)
-
-	radiation = max(radiation - (RAD_LOSS_PER_SECOND * delta_time), 0)
-	if(radiation > RAD_MOB_SAFE)
-		adjustToxLoss(log(radiation-RAD_MOB_SAFE)*RAD_TOX_COEFFICIENT*delta_time)
-
+	for(var/mut in dna.temporary_mutations)
+		if(dna.temporary_mutations[mut] < world.time)
+			if(mut == UI_CHANGED)
+				if(dna.previous["UI"])
+					dna.unique_identity = merge_text(dna.unique_identity,dna.previous["UI"])
+					updateappearance(mutations_overlay_update=1)
+					dna.previous.Remove("UI")
+				dna.temporary_mutations.Remove(mut)
+				continue
+			if(mut == UF_CHANGED)
+				if(dna.previous["UF"])
+					dna.unique_features = merge_text(dna.unique_features,dna.previous["UF"])
+					updateappearance(mutcolor_update=1, mutations_overlay_update=1)
+					dna.previous.Remove("UF")
+				dna.temporary_mutations.Remove(mut)
+				continue
+			if(mut == UE_CHANGED)
+				if(dna.previous["name"])
+					real_name = dna.previous["name"]
+					name = real_name
+					dna.previous.Remove("name")
+				if(dna.previous["UE"])
+					dna.unique_enzymes = dna.previous["UE"]
+					dna.previous.Remove("UE")
+				if(dna.previous["blood_type"])
+					dna.blood_type = dna.previous["blood_type"]
+					dna.previous.Remove("blood_type")
+				dna.temporary_mutations.Remove(mut)
+				continue
+	for(var/datum/mutation/human/HM in dna.mutations)
+		if(HM?.timeout)
+			dna.remove_mutation(HM.type)
 
 /*
 Alcohol Poisoning Chart
@@ -513,40 +465,39 @@ All effects don't start immediately, but rather get worse over time; the rate is
 
 	//Dizziness
 	if(dizziness)
-		var/client/C = client
-		var/pixel_x_diff = 0
-		var/pixel_y_diff = 0
-		var/temp
-		var/saved_dizz = dizziness
-		if(C)
-			var/oldsrc = src
-			var/amplitude = dizziness*(sin(dizziness * world.time) + 1) // This shit is annoying at high strength
-			src = null
-			spawn(0) // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				if(C)
-					temp = amplitude * sin(saved_dizz * world.time)
-					pixel_x_diff += temp
-					C.pixel_x += temp
-					temp = amplitude * cos(saved_dizz * world.time)
-					pixel_y_diff += temp
-					C.pixel_y += temp
-					sleep(3)
-					if(C)
-						temp = amplitude * sin(saved_dizz * world.time)
-						pixel_x_diff += temp
-						C.pixel_x += temp
-						temp = amplitude * cos(saved_dizz * world.time)
-						pixel_y_diff += temp
-						C.pixel_y += temp
-					sleep(3)
-					if(C)
-						C.pixel_x -= pixel_x_diff
-						C.pixel_y -= pixel_y_diff
-			src = oldsrc
+		var/old_dizzy = dizziness
 		dizziness = max(dizziness - (restingpwr * delta_time), 0)
 
+		if(client)
+			//Want to be able to offset things by the time the animation should be "playing" at
+			var/time = world.time
+			var/delay = 0
+			var/pixel_x_diff = 0
+			var/pixel_y_diff = 0
+
+			var/amplitude = old_dizzy*(sin(old_dizzy * (time)) + 1) // This shit is annoying at high strengthvar/pixel_x_diff = 0
+			var/x_diff = amplitude * sin(old_dizzy * time)
+			var/y_diff = amplitude * cos(old_dizzy * time)
+			pixel_x_diff += x_diff
+			pixel_y_diff += y_diff
+			// Brief explanation. We're basically snapping between different pixel_x/ys instantly, with delays between
+			// Doing this with relative changes. This way we don't override any existing pixel_x/y values
+			// We use EASE_OUT here for similar reasons, we want to act at the end of the delay, not at its start
+			// Relative animations are weird, so we do actually need this
+			animate(client, pixel_x = x_diff, pixel_y = y_diff, 3, easing = JUMP_EASING | EASE_OUT, flags = ANIMATION_RELATIVE)
+			delay += 0.3 SECONDS // This counts as a 0.3 second wait, so we need to shift the sine wave by that much
+
+			x_diff = amplitude * sin(dizziness * (time + delay))
+			y_diff = amplitude * cos(dizziness * (time + delay))
+			pixel_x_diff += x_diff
+			pixel_y_diff += y_diff
+			animate(pixel_x = x_diff, pixel_y = y_diff, 3, easing = JUMP_EASING | EASE_OUT, flags = ANIMATION_RELATIVE)
+
+			// Now we reset back to our old pixel_x/y, since these animates are relative
+			animate(pixel_x = -pixel_x_diff, pixel_y = -pixel_y_diff, 3, easing = JUMP_EASING | EASE_OUT, flags = ANIMATION_RELATIVE)
+
 	if(drowsyness)
-		drowsyness = max(drowsyness - (restingpwr * delta_time), 0)
+		adjust_drowsyness(-1 * restingpwr * delta_time)
 		blur_eyes(1 * delta_time)
 		if(DT_PROB(2.5, delta_time))
 			AdjustSleeping(100)
@@ -582,6 +533,8 @@ All effects don't start immediately, but rather get worse over time; the rate is
 			SEND_SIGNAL(src, COMSIG_CLEAR_MOOD_EVENT, "drunk")
 			clear_alert("drunk")
 			sound_environment_override = SOUND_ENVIRONMENT_NONE
+			REMOVE_TRAIT(src, TRAIT_NUMBED, src) //SKYRAT EDIT START - ANESTHETIC EFFECT REMOVAL
+			clear_alert("numbed") //SKYRAT EDIT END
 
 		if(drunkenness >= 11 && slurring < 5)
 			slurring += 0.6 * delta_time
@@ -600,6 +553,8 @@ All effects don't start immediately, but rather get worse over time; the rate is
 			if(DT_PROB(16, delta_time))
 				add_confusion(2)
 			Dizzy(5 * delta_time)
+			ADD_TRAIT(src, TRAIT_NUMBED, src) //SKYRAT EDIT START - ANESTHETIC EFFECT ADDITION
+			throw_alert("numbed", /atom/movable/screen/alert/numbed) //SKYRAT EDIT END
 
 		if(drunkenness >= 51)
 			if(DT_PROB(1.5, delta_time))

@@ -1,13 +1,14 @@
 /datum/asset/spritesheet/languages
 	name = "languages"
 	early = TRUE
+	cross_round_cachable = TRUE
 
-/datum/asset/spritesheet/languages/register()
+/datum/asset/spritesheet/languages/create_spritesheets()
 	var/list/to_insert = list()
 
 	if(!GLOB.all_languages.len)
-		for(var/L in subtypesof(/datum/language))
-			var/datum/language/language = L
+		for(var/iterated_language in subtypesof(/datum/language))
+			var/datum/language/language = iterated_language
 			if(!initial(language.key))
 				continue
 
@@ -19,13 +20,11 @@
 
 	for (var/language_name in GLOB.all_languages)
 		var/datum/language/language = GLOB.language_datum_instances[language_name]
-		var/icon/language_icon = icon(language.icon, icon_state=language.icon_state)
+		var/icon/language_icon = icon(language.icon, icon_state = language.icon_state)
 		to_insert[sanitize_css_class_name(language.name)] = language_icon
 
 	for (var/spritesheet_key in to_insert)
 		Insert(spritesheet_key, to_insert[spritesheet_key])
-
-	return ..()
 
 /// Middleware to handle languages
 /datum/preference_middleware/languages
@@ -71,19 +70,19 @@
 	var/list/data = list()
 
 	var/max_languages = preferences.all_quirks.Find(QUIRK_LINGUIST) ? 4 : 3
+	var/species_type = preferences.read_preference(/datum/preference/choiced/species)
+	var/datum/species/species = new species_type()
 	if(!preferences.languages || !preferences.languages.len || (preferences.languages && preferences.languages.len > max_languages)) // Too many languages, or no languages.
 		preferences.languages = list()
-		var/species_type = preferences.read_preference(/datum/preference/choiced/species)
-		var/datum/species/species = new species_type()
 		for(var/language in species.learnable_languages)
 			preferences.languages[language] = LANGUAGE_SPOKEN
-		qdel(species)
-
 	var/list/selected_languages = list()
 	var/list/unselected_languages = list()
 	for (var/language_name in GLOB.all_languages)
 		var/datum/language/language = GLOB.language_datum_instances[language_name]
 		if(language.secret)
+			continue
+		if(species.always_customizable && !(language.type in species.learnable_languages)) //For the ghostrole species. We don't want ashwalkers speaking beachtongue now.
 			continue
 		if(preferences.languages[language.type])
 			selected_languages += list(list(
@@ -97,6 +96,7 @@
 				"name" = language.name,
 				"icon" = sanitize_css_class_name(language.name)
 			))
+	qdel(species)
 
 	data["total_language_points"] = max_languages
 	data["selected_languages"] = selected_languages

@@ -27,10 +27,10 @@
 	powered = !powered
 	playsound(src, 'sound/effects/sparks4.ogg', 100, TRUE)
 	if(powered)
-		to_chat(user, "<span class='notice'>You turn [src] on.</span>")
+		to_chat(user, span_notice("You turn [src] on."))
 		switched_on()
 		return
-	to_chat(user, "<span class='notice'>You turn [src] off.</span>")
+	to_chat(user, span_notice("You turn [src] off."))
 	switched_off()
 
 /obj/item/weldingtool/electric/switched_on(mob/user)
@@ -46,6 +46,7 @@
 
 /obj/item/weldingtool/electric/switched_off(mob/user)
 	powered = FALSE
+	welding = FALSE
 	light_on = FALSE
 	force = initial(force)
 	damtype = BRUTE

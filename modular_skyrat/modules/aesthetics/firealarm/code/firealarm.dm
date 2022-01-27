@@ -11,6 +11,8 @@
 		panel_open = TRUE
 		pixel_x = (dir & 3)? 0 : (dir == 4 ? -24 : 24)
 		pixel_y = (dir & 3)? (dir ==1 ? -24 : 24) : 0
+	if(name == initial(name))
+		name = "[get_area_name(src)] [initial(name)]"
 
 	RegisterSignal(SSsecurity_level, COMSIG_SECURITY_LEVEL_CHANGED, .proc/check_security_level)
 
@@ -67,6 +69,7 @@
 	SEND_SIGNAL(src, COMSIG_FIREALARM_TRIGGER_DOORS)
 
 /obj/machinery/firealarm/proc/trigger_effects()
+	SIGNAL_HANDLER
 	SEND_SIGNAL(src, COMSIG_FIREALARM_TRIGGERED_ON)
 
 /obj/machinery/firealarm/proc/untrigger_effects()

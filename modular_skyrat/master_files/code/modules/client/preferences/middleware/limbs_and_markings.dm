@@ -12,6 +12,7 @@
 		"remove_marking" = .proc/remove_marking,
 		"set_organ_aug" = .proc/set_organ_aug,
 		"set_preset" = .proc/set_preset,
+		"change_emissive" = .proc/change_emissive_marking,
 	)
 	var/list/limbs_to_process = list(
 		"l_arm" = "Left Arm",
@@ -30,7 +31,8 @@
 		"liver" = "Liver",
 		"stomach" = "Stomach",
 		"eyes" = "Eyes",
-		"tongue" = "Tongue"
+		"tongue" = "Tongue",
+		"Mouth implant" = "Mouth implant"
 	)
 
 	var/list/aug_support = list(
@@ -41,10 +43,14 @@
 		"chest" = FALSE, // TODO: figure out why head/chest augs dont render, needed for IPC head on non IPC body
 		"head" = FALSE,
 		"l_hand" = FALSE,
-		"r_hand" = FALSE
+		"r_hand" = FALSE,
 	)
 	var/list/nice_aug_names = list()
 	var/list/augment_to_path = list()
+	var/list/costs = list(
+		AUGMENT_CATEGORY_LIMBS = list(),
+		AUGMENT_CATEGORY_ORGANS = list(),
+	)
 	var/list/robotic_styles
 
 /datum/preference_middleware/limbs_and_markings/proc/set_limb_aug(list/params, mob/user)
@@ -72,9 +78,10 @@
 	var/marking_count = 0
 	for(var/marking in markings_list)
 		var/name = marking
-		var/color = markings_list[name]
+		var/color = markings_list[name][1]
+		var/emissive = markings_list[name][2]
 		marking_count++
-		fixed_markings += list(list("name" = name, "color" = expand_three_digit_color(color), "marking_id" = "[limb_slot]_[marking_count]"))
+		fixed_markings += list(list("name" = name, "color" = sanitize_hexcolor(color), "marking_id" = "[limb_slot]_[marking_count]", "emissive" = emissive))
 	return fixed_markings
 
 /datum/preference_middleware/limbs_and_markings/proc/add_marking(list/params, mob/user)
@@ -83,7 +90,7 @@
 		preferences.body_markings[limb_slot] = list()
 	if(preferences.body_markings[limb_slot].len >= MAXIMUM_MARKINGS_PER_LIMB)
 		return
-	preferences.body_markings[limb_slot] += list(GLOB.body_markings_per_limb[limb_slot][1] = "FFF") // Default to the first in the list for the limb.
+	preferences.body_markings[limb_slot] += list(GLOB.body_markings_per_limb[limb_slot][1] = list("#FFFFFF", FALSE)) // Default to the first in the list for the limb.
 	preferences.character_preview_view.update_body()
 	return TRUE
 
@@ -108,25 +115,43 @@
 /datum/preference_middleware/limbs_and_markings/proc/color_marking(list/params, mob/user)
 	var/limb_slot = params["limb_slot"]
 	var/marking_id = params["marking_id"]
+	var/list/markings = preferences.body_markings[limb_slot]
+	var/list/new_markings = list()
+	var/marking_count = 0
+	var/marking_entry_name
+	for(var/marking_entry in markings)
+		marking_count++
+		if(marking_id == "[limb_slot]_[marking_count]")
+			marking_entry_name = marking_entry
+		new_markings[marking_entry] = markings[marking_entry]
 	var/new_color = input(
 		usr,
 		"Select new color",
 		null,
-		COLOR_WHITE,
+		preferences.body_markings[limb_slot][marking_entry_name],
 	) as color | null
 	if(!new_color)
 		return TRUE
+	new_markings[marking_entry_name][1] = sanitize_hexcolor(new_color) // gets the new color from the picker
+	preferences.body_markings[limb_slot] = new_markings
+	preferences.character_preview_view.update_body()
+	return TRUE
 
 
+/datum/preference_middleware/limbs_and_markings/proc/change_emissive_marking(list/params, mob/user)
+	var/limb_slot = params["limb_slot"]
+	var/marking_id = params["marking_id"]
+	var/emissive = !params["emissive"]
 	var/list/markings = preferences.body_markings[limb_slot]
 	var/list/new_markings = list()
 	var/marking_count = 0
+	var/marking_entry_name
 	for(var/marking_entry in markings)
 		marking_count++
 		if(marking_id == "[limb_slot]_[marking_count]")
-			new_markings[marking_entry] = sanitize_hexcolor(new_color) // gets the new color from the picker
-			continue
+			marking_entry_name = marking_entry
 		new_markings[marking_entry] = markings[marking_entry]
+	new_markings[marking_entry_name][2] = sanitize_integer(emissive)
 	preferences.body_markings[limb_slot] = new_markings
 	preferences.character_preview_view.update_body()
 	return TRUE
@@ -179,8 +204,15 @@
 			nice_aug_names[limb] = list()
 			for(var/augments in GLOB.augment_slot_to_items[limbs_to_process[limb]])
 				var/obj/item/aug = augments
-				nice_aug_names[limb][augments] = initial(aug.name)
-				augment_to_path[initial(aug.name)] = augments
+				var/cost = 0
+				if(GLOB.augment_items[augments])
+					var/datum/augment_item/expensive_augment = GLOB.augment_items[augments]
+					cost = expensive_augment.cost
+				// To display the cost of the limb, if it's anything aside from 0.
+				var/aug_name = cost != 0 ? initial(aug.name) + " ([cost])" : initial(aug.name)
+				costs[AUGMENT_CATEGORY_LIMBS][aug_name] = cost
+				nice_aug_names[limb][augments] = aug_name
+				augment_to_path[aug_name] = augments
 			nice_aug_names[limb]["none"] = "None"
 		var/chosen_augment
 		if(preferences.augments[limbs_to_process[limb]] && !isnull(nice_aug_names[limb][preferences.augments[limbs_to_process[limb]]]))
@@ -194,6 +226,7 @@
 			"chosen_aug" = chosen_augment,
 			"chosen_style" = preferences.augment_limb_styles[limbs_to_process[limb]] ? preferences.augment_limb_styles[limbs_to_process[limb]] : "None",
 			"aug_choices" = nice_aug_names[limb],
+			"costs" = costs[AUGMENT_CATEGORY_LIMBS],
 			"markings" = list(
 				"marking_choices" = GLOB.body_markings_per_limb[limb],
 				"markings_list" = fix_colors_on_markings_to_tgui(preferences.body_markings[limb], limb)
@@ -208,8 +241,15 @@
 			nice_aug_names[organ] = list()
 			for(var/augments in GLOB.augment_slot_to_items[organs_to_process[organ]])
 				var/obj/item/aug = augments
-				nice_aug_names[organ][augments] = initial(aug.name)
-				augment_to_path[initial(aug.name)] = augments
+				var/cost = 0
+				if(GLOB.augment_items[augments])
+					var/datum/augment_item/expensive_augment = GLOB.augment_items[augments]
+					cost = expensive_augment.cost
+				// To display the cost of the limb, if it's anything aside from 0.
+				var/aug_name = cost != 0 ? initial(aug.name) + " ([cost])" : initial(aug.name)
+				costs[AUGMENT_CATEGORY_ORGANS][aug_name] = cost
+				nice_aug_names[organ][augments] = aug_name
+				augment_to_path[aug_name] = augments
 			nice_aug_names[organ]["organic"] = "Organic"
 		var/chosen_organ
 		if(preferences.augments[organs_to_process[organ]] && !isnull(nice_aug_names[organ][preferences.augments[organs_to_process[organ]]]))
@@ -220,7 +260,8 @@
 			"slot" = organ,
 			"name" = organs_to_process[organ],
 			"chosen_organ" = chosen_organ,
-			"organ_choices" = nice_aug_names[organ]
+			"organ_choices" = nice_aug_names[organ],
+			"costs" = costs[AUGMENT_CATEGORY_ORGANS]
 		))
 
 	data["organs_data"] = organs_data

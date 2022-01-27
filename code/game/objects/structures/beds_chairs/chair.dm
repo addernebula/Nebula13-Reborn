@@ -55,7 +55,7 @@
 /obj/structure/chair/proc/RemoveFromLatejoin()
 	SSjob.latejoin_trackers -= src //These may be here due to the arrivals shuttle
 
-/obj/structure/chair/deconstruct()
+/obj/structure/chair/deconstruct(disassembled)
 	// If we have materials, and don't have the NOCONSTRUCT flag
 	if(!(flags_1 & NODECONSTRUCT_1))
 		if(buildstacktype)
@@ -100,10 +100,12 @@
 		to_chat(user, "<span class='notice'> You cannot fit the shock kit onto the [name]!")
 
 
-/obj/structure/chair/wrench_act(mob/living/user, obj/item/I)
-	. = ..()
-	I.play_tool_sound(src)
-	deconstruct()
+/obj/structure/chair/wrench_act_secondary(mob/living/user, obj/item/weapon)
+	if(flags_1&NODECONSTRUCT_1)
+		return TRUE
+	..()
+	weapon.play_tool_sound(src)
+	deconstruct(disassembled = TRUE)
 	return TRUE
 
 /obj/structure/chair/attack_tk(mob/user)
@@ -129,7 +131,12 @@
 /obj/structure/chair/post_buckle_mob(mob/living/M)
 	. = ..()
 	handle_layer()
-
+	//SKYRAT EDIT ADDITION
+	if(HAS_TRAIT(M, TRAIT_OVERSIZED))
+		visible_message(span_warning("[src] buckles under the weight of [M] causing it to break!"))
+		playsound(src, 'modular_skyrat/modules/oversized/sound/chair_break.ogg', 70, TRUE)
+		deconstruct()
+	//SKYRAT EDIT END
 /obj/structure/chair/post_unbuckle_mob()
 	. = ..()
 	handle_layer()
@@ -173,15 +180,17 @@
 	max_integrity = 70
 	buildstackamount = 2
 	item_chair = null
+	// The mutable appearance used for the overlay over buckled mobs.
 	var/mutable_appearance/armrest
 
 /obj/structure/chair/comfy/Initialize(mapload)
 	armrest = GetArmrest()
 	armrest.layer = ABOVE_MOB_LAYER
+	armrest.plane = ABOVE_GAME_PLANE
 	return ..()
 
 /obj/structure/chair/comfy/proc/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "comfychair_armrest")
+	return mutable_appearance(icon, "[icon_state]_armrest")
 
 /obj/structure/chair/comfy/Destroy()
 	QDEL_NULL(armrest)
@@ -222,13 +231,16 @@
 	icon_state = "shuttle_chair"
 	buildstacktype = /obj/item/stack/sheet/mineral/titanium
 
-/obj/structure/chair/comfy/shuttle/GetArmrest()
-	return mutable_appearance('icons/obj/chairs.dmi', "shuttle_chair_armrest")
-
 /obj/structure/chair/comfy/shuttle/electrify_self(obj/item/assembly/shock_kit/input_shock_kit, mob/user, list/overlays_from_child_procs)
 	if(!overlays_from_child_procs)
 		overlays_from_child_procs = list(image('icons/obj/chairs.dmi', loc, "echair_over", pixel_x = -1))
 	. = ..()
+
+/obj/structure/chair/comfy/carp
+	name = "carpskin chair"
+	desc = "A luxurious chair, the many purple scales reflect the light in a most pleasing manner."
+	icon_state = "carp_chair"
+	buildstacktype = /obj/item/stack/sheet/animalhide/carp
 
 /obj/structure/chair/office
 	anchored = FALSE
@@ -260,19 +272,7 @@
 	buildstackamount = 1
 	item_chair = /obj/item/chair/stool
 
-/obj/structure/chair/stool/directional/north
-	dir = SOUTH
-	pixel_y = 6
-
-/obj/structure/chair/stool/directional/south
-	dir = NORTH
-	pixel_y = 6
-
-/obj/structure/chair/stool/directional/east
-	dir = WEST
-
-/obj/structure/chair/stool/directional/west
-	dir = EAST
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/chair/stool, 0)
 
 /obj/structure/chair/stool/narsie_act()
 	return
@@ -300,17 +300,17 @@
 	icon_state = "bar"
 	item_chair = /obj/item/chair/stool/bar
 
-/obj/structure/chair/stool/bar/directional/north
-	dir = SOUTH
+MAPPING_DIRECTIONAL_HELPERS(/obj/structure/chair/stool/bar, 0)
 
-/obj/structure/chair/stool/bar/directional/south
-	dir = NORTH
-
-/obj/structure/chair/stool/bar/directional/east
-	dir = WEST
-
-/obj/structure/chair/stool/bar/directional/west
-	dir = EAST
+/obj/structure/chair/stool/bamboo
+	name = "bamboo stool"
+	desc = "A makeshift bamboo stool with a rustic look."
+	icon_state = "bamboo_stool"
+	resistance_flags = FLAMMABLE
+	max_integrity = 60
+	buildstacktype = /obj/item/stack/sheet/mineral/bamboo
+	buildstackamount = 2
+	item_chair = /obj/item/chair/stool/bamboo
 
 /obj/item/chair
 	name = "chair"
@@ -413,6 +413,14 @@
 	icon_state = "bar_toppled"
 	inhand_icon_state = "stool_bar"
 	origin_type = /obj/structure/chair/stool/bar
+
+/obj/item/chair/stool/bamboo
+	name = "bamboo stool"
+	icon_state = "bamboo_stool"
+	inhand_icon_state = "stool_bamboo"
+	hitsound = 'sound/weapons/genhit1.ogg'
+	origin_type = /obj/structure/chair/stool/bamboo
+	break_chance = 50	//Submissive and breakable unlike the chad iron stool
 
 /obj/item/chair/stool/narsie_act()
 	return //sturdy enough to ignore a god

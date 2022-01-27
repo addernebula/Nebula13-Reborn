@@ -29,13 +29,13 @@
 	if(!can_use(usr))
 		return
 	if(!can_switch_eye)
-		to_chat(usr, "<span class='warning'>You cannot wear this any differently!</span>")
+		to_chat(usr, span_warning("You cannot wear this any differently!"))
 		return
 	eyepatch_do_switch()
 	if(current_eye == "_L")
-		to_chat(usr, "<span class='notice'>You adjust the eyepatch to wear it over your left eye.</span>")
+		to_chat(usr, span_notice("You adjust the eyepatch to wear it over your left eye."))
 	else if(current_eye == "_R")
-		to_chat(usr, "<span class='notice'>You adjust the eyepatch to wear it over your right eye.</span>")
+		to_chat(usr, span_notice("You adjust the eyepatch to wear it over your right eye."))
 	usr.update_inv_glasses()
 	usr.update_overlays()
 
@@ -117,4 +117,9 @@
 	inhand_icon_state = "welding-g"
 	vision_correction = TRUE
 
-
+// Like sunglasses, but without any protection
+/obj/item/clothing/glasses/fake_sunglasses
+	name = "low-UV sunglasses"
+	desc = "A cheaper brand of sunglasses rated for much lower UV levels. Offers the user no protection against bright lights."
+	icon_state = "sun"
+	inhand_icon_state = "sunglasses"

@@ -1,4 +1,4 @@
-#define FIREALARM_COOLDOWN 80 //SKYRAT EDIT CHANGE - ORIGINAL: 67 - AESTHETIC // Chosen fairly arbitrarily, it is the length of the audio in FireAlarm.ogg. The actual track length is 7 seconds 8ms but but the audio stops at 6s 700ms
+#define FIREALARM_COOLDOWN 80 //SKYRAT EDIT CHANGE - ORIGINAL: 96 - AESTHETIC // This define is based on the current FireAlarm.ogg, and is placed to match the running time at 9 seconds 600 milliseconds (9.6 seconds)
 
 /obj/item/electronics/firealarm
 	name = "fire alarm electronics"
@@ -10,6 +10,7 @@
 	icon = 'icons/obj/monitors.dmi' //ICON OVERRIDEN IN SKYRAT AESTHETICS - SEE MODULE
 	icon_state = "fire_bitem"
 	result_path = /obj/machinery/firealarm
+	pixel_shift = 26
 
 /obj/machinery/firealarm
 	name = "fire alarm"
@@ -18,7 +19,7 @@
 	icon_state = "fire0"
 	max_integrity = 250
 	integrity_failure = 0.4
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 100, RAD = 100, FIRE = 90, ACID = 30)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 100, FIRE = 90, ACID = 30)
 	use_power = IDLE_POWER_USE
 	idle_power_usage = 2
 	active_power_usage = 6
@@ -42,13 +43,11 @@
 /* SKYRAT EDIT REMOVAL
 /obj/machinery/firealarm/Initialize(mapload, dir, building)
 	. = ..()
-	if(dir)
-		src.setDir(dir)
 	if(building)
 		buildstage = 0
 		panel_open = TRUE
-		pixel_x = (dir & 3)? 0 : (dir == 4 ? -24 : 24)
-		pixel_y = (dir & 3)? (dir ==1 ? -24 : 24) : 0
+	if(name == initial(name))
+		name = "[get_area_name(src)] [initial(name)]"
 	update_appearance()
 	myarea = get_area(src)
 	LAZYADD(myarea.firealarms, src)
@@ -169,7 +168,7 @@
 	COOLDOWN_START(src, last_alarm, FIREALARM_COOLDOWN)
 	var/area/area = get_area(src)
 	area.firealert(src)
-	//playsound(loc, 'goon/sound/machinery/FireAlarm.ogg', 75) ORIGINAL
+	//playsound(loc, 'sound/machines/FireAlarm.ogg', 96) ORIGINAL
 	playsound(loc, alarm_sound, 75) //SKYRAT EDIT CHANGE - AESTHETICS
 	if(user)
 		log_game("[user] triggered a fire alarm at [COORD(src)]")
@@ -380,20 +379,7 @@
 	detecting = !detecting
 	to_chat(user, span_notice("You [ detecting ? "enable" : "disable" ] [src]'s detecting unit!"))
 
-/obj/machinery/firealarm/directional/north
-	pixel_y = 26
-
-/obj/machinery/firealarm/directional/south
-	dir = NORTH
-	pixel_y = -26
-
-/obj/machinery/firealarm/directional/east
-	dir = WEST
-	pixel_x = 26
-
-/obj/machinery/firealarm/directional/west
-	dir = EAST
-	pixel_x = -26
+MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 26)
 
 /*
  * Return of Party button

@@ -59,15 +59,15 @@
 
 /obj/machinery/xenoarch/researcher
 	name = "xenoarch researcher"
-	desc = "A machine that is used to deconstruct strange rocks, useless relics, and broken objects for technology."
+	desc = "A machine that is used to condense strange rocks, useless relics, and broken objects into bigger artifacts."
 	icon_state = "researcher"
 	circuit = /obj/item/circuitboard/machine/xenoarch_researcher
-	///A variable that goes from 0 to 100. Depending on what is processed, increases the value. Once 100, spawns a tech disk.
+	///A variable that goes from 0 to 100. Depending on what is processed, increases the value. Once 100, spawns an anomalous crystal.
 	var/current_research = 0
 
 /obj/machinery/xenoarch/researcher/examine(mob/user)
 	. = ..()
-	. += span_notice("[current_research]/100 research points. Research more xenoarchaeological items.")
+	. += span_notice("[current_research]/150 research points. Research more xenoarchaeological items.")
 
 /obj/machinery/xenoarch/researcher/attackby(obj/item/weapon, mob/user, params)
 	if(istype(weapon, /obj/item/storage/bag/xenoarch))
@@ -113,59 +113,15 @@
 		current_research += 5
 	if(istype(remove_item, /obj/item/xenoarch/broken_item))
 		current_research += 10
-	if(current_research >= 100)
-		current_research = 0
-		new /obj/item/disk/tech_disk/spaceloot(get_turf(src))
+	if(current_research >= 150)
+		current_research -= 150
+		var/list/choices = subtypesof(/obj/machinery/anomalous_crystal)
+		var/random_crystal = pick(choices)
+		new random_crystal(get_turf(src))
 	qdel(remove_item)
 	playsound(src, 'sound/machines/click.ogg', 50, TRUE)
 	world_compare = world.time + process_speed
 	addtimer(CALLBACK(src, .proc/do_machine_process), process_speed)
-
-/obj/machinery/xenoarch/digger
-	name = "xenoarch digger"
-	desc = "A machine that is used to slowly uncover items within strange rocks."
-	icon_state = "digger"
-	circuit = /obj/item/circuitboard/machine/xenoarch_digger
-
-/obj/machinery/xenoarch/digger/attackby(obj/item/weapon, mob/user, params)
-	if(istype(weapon, /obj/item/storage/bag/xenoarch))
-		var/obj/item/storage/bag/xenoarch/xenoarch_bag = weapon
-		for(var/check_item in xenoarch_bag.contents)
-			if(!istype(check_item, /obj/item/xenoarch/strange_rock))
-				continue
-			var/obj/item/xenoarch/strange_rock/strange_rock = check_item
-			if(!do_after(user, 1 SECONDS, target = src))
-				world_compare = world.time + (process_speed * 4)
-				addtimer(CALLBACK(src, .proc/do_machine_process), (process_speed * 4))
-				return
-			strange_rock.forceMove(holding_storage)
-			to_chat(user, span_notice("The strange rock has been inserted into [src]."))
-		world_compare = world.time + (process_speed * 4)
-		addtimer(CALLBACK(src, .proc/do_machine_process), (process_speed * 4))
-		return
-	if(istype(weapon, /obj/item/xenoarch/strange_rock))
-		insert_xeno_item(weapon, user)
-		return
-	return ..()
-
-/obj/machinery/xenoarch/digger/do_machine_process()
-	if(!holding_storage.contents.len)
-		return
-	if(world_compare > world.time)
-		return
-	var/turf/src_turf = get_turf(src)
-	var/obj/item/content_obj = holding_storage.contents[1]
-	if(!content_obj)
-		return
-	if(!istype(content_obj, /obj/item/xenoarch/strange_rock))
-		qdel(content_obj)
-		return
-	var/obj/item/xenoarch/strange_rock/strange_rock = content_obj
-	new strange_rock.hidden_item(src_turf)
-	playsound(src, 'sound/machines/click.ogg', 50, TRUE)
-	qdel(strange_rock)
-	world_compare = world.time + (process_speed * 4)
-	addtimer(CALLBACK(src, .proc/do_machine_process), (process_speed * 4))
 
 /obj/machinery/xenoarch/scanner
 	name = "xenoarch scanner"
@@ -219,34 +175,34 @@
 		qdel(content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/tech))
-		var/spawn_item = pickweight(GLOB.tech_reward)
+		var/spawn_item = pick_weight(GLOB.tech_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/weapon))
-		var/spawn_item = pickweight(GLOB.weapon_reward)
+		var/spawn_item = pick_weight(GLOB.weapon_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/illegal))
-		var/spawn_item = pickweight(GLOB.illegal_reward)
+		var/spawn_item = pick_weight(GLOB.illegal_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/alien))
-		var/spawn_item = pickweight(GLOB.alien_reward)
+		var/spawn_item = pick_weight(GLOB.alien_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/plant))
-		var/spawn_item = pickweight(GLOB.plant_reward)
+		var/spawn_item = pick_weight(GLOB.plant_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/clothing))
-		var/spawn_item = pickweight(GLOB.clothing_reward)
+		var/spawn_item = pick_weight(GLOB.clothing_reward)
 		recover_item(spawn_item, content_obj)
 		return
 	if(istype(content_obj, /obj/item/xenoarch/broken_item/animal))
 		var/spawn_item
 		var/turf/src_turf = get_turf(src)
 		for(var/looptime in 1 to rand(1,4))
-			spawn_item = pickweight(GLOB.animal_reward)
+			spawn_item = pick_weight(GLOB.animal_reward)
 			new spawn_item(src_turf)
 		recover_item(spawn_item, content_obj)
 		return

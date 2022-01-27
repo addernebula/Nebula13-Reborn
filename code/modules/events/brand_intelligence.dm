@@ -4,8 +4,7 @@
 	weight = 5
 
 	min_players = 15
-	//max_occurrences = 1 //ORIGINAL
-	max_occurrences = 0 //SKYRAT EDIT CHANGE
+	max_occurrences = 1
 
 /datum/round_event/brand_intelligence
 	announceWhen = 21
@@ -55,7 +54,7 @@
 			originMachine.visible_message(span_notice("[originMachine] beeps and seems lifeless."))
 		kill()
 		return
-	vendingMachines = removeNullsFromList(vendingMachines)
+	vendingMachines = remove_nulls_from_list(vendingMachines)
 	if(!vendingMachines.len) //if every machine is infected
 		for(var/obj/machinery/vending/upriser in infectedMachines)
 			if(!QDELETED(upriser))

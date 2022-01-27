@@ -26,13 +26,13 @@
 /obj/item/clothing/ears/headphones/proc/toggle(owner)
 	headphones_on = !headphones_on
 	update_icon()
-	to_chat(owner, "<span class='notice'>You turn the music [headphones_on? "on. Untz Untz Untz!" : "off."]</span>")
+	to_chat(owner, span_notice("You turn the music [headphones_on? "on. Untz Untz Untz!" : "off."]"))
 
 /datum/action/item_action/toggle_headphones
 	name = "Toggle Headphones"
 	desc = "UNTZ UNTZ UNTZ"
 
-/datum/action/item_action/toggle_headphones/Trigger()
+/datum/action/item_action/toggle_headphones/Trigger(trigger_flags)
 	var/obj/item/clothing/ears/headphones/H = target
 	if(istype(H))
 		H.toggle(owner)

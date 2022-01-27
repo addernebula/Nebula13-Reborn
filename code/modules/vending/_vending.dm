@@ -36,6 +36,8 @@
 	var/age_restricted = FALSE
 	///Whether the product can be recolored by the GAGS system
 	var/colorable
+	///List of items that have been returned to the vending machine.
+	var/list/returned_products
 
 /**
  * # vending machines
@@ -54,7 +56,7 @@
 	verb_exclaim = "beeps"
 	max_integrity = 300
 	integrity_failure = 0.33
-	armor = list(MELEE = 20, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 50, ACID = 70)
+	armor = list(MELEE = 20, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 50, ACID = 70)
 	circuit = /obj/item/circuitboard/machine/vendor
 	payment_department = ACCOUNT_SRV
 	light_power = 0.5
@@ -73,6 +75,8 @@
 	var/forcecrit = 0
 	var/num_shards = 7
 	var/list/pinned_mobs = list()
+	///Icon for the maintenance panel overlay
+	var/panel_type = "panel1"
 
 	/**
 	  * List of products this machine sells
@@ -209,7 +213,7 @@
 	else if(circuit && (circuit.onstation != onstation)) //check if they're not the same to minimize the amount of edited values.
 		onstation = circuit.onstation //if it was constructed outside mapload, sync the vendor up with the circuit's var so you can't bypass price requirements by moving / reconstructing it off station.
 	Radio = new /obj/item/radio(src)
-	Radio.listening = 0
+	Radio.set_listening(FALSE)
 
 /obj/machinery/vending/Destroy()
 	QDEL_NULL(wires)
@@ -260,9 +264,9 @@
 
 /obj/machinery/vending/update_overlays()
 	. = ..()
-	if(!light_mask)
-		return
-	if(!(machine_stat & BROKEN) && powered())
+	if(panel_open)
+		. += panel_type
+	if(light_mask && !(machine_stat & BROKEN) && powered())
 		. += emissive_appearance(icon, light_mask)
 
 /obj/machinery/vending/atom_break(damage_flag)
@@ -276,6 +280,14 @@
 		found_anything = FALSE
 		for(var/record in shuffle(product_records))
 			var/datum/data/vending_product/R = record
+
+			//first dump any of the items that have been returned, in case they contain the nuke disk or something
+			for(var/obj/returned_obj_to_dump in R.returned_products)
+				LAZYREMOVE(R.returned_products, returned_obj_to_dump)
+				returned_obj_to_dump.forceMove(get_turf(src))
+				step(returned_obj_to_dump, pick(GLOB.alldirs))
+				R.amount--
+
 			if(R.amount <= 0) //Try to use a record that actually has something to dump.
 				continue
 			var/dump_path = R.product_path
@@ -286,8 +298,8 @@
 			if(found_anything && prob(80))
 				continue
 
-			var/obj/O = new dump_path(loc)
-			step(O, pick(GLOB.alldirs))
+			var/obj/obj_to_dump = new dump_path(loc)
+			step(obj_to_dump, pick(GLOB.alldirs))
 			found_anything = TRUE
 			dump_amount++
 			if (dump_amount >= 16)
@@ -311,7 +323,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 		if(isnull(amount))
 			amount = 0
 
-		var/atom/temp = typepath
+		var/obj/item/temp = typepath
 		var/datum/data/vending_product/R = new /datum/data/vending_product()
 		GLOB.vending_products[typepath] = 1
 		R.name = initial(temp.name)
@@ -339,11 +351,11 @@ GLOBAL_LIST_EMPTY(vending_products)
 	extra_price = round(initial(extra_price) * SSeconomy.inflation_value())
 	for(var/R in recordlist)
 		var/datum/data/vending_product/record = R
-		var/atom/potential_product = record.product_path
+		var/obj/item/potential_product = record.product_path
 		record.custom_price = round(initial(potential_product.custom_price) * SSeconomy.inflation_value())
 	for(var/R in premiumlist)
 		var/datum/data/vending_product/record = R
-		var/atom/potential_product = record.product_path
+		var/obj/item/potential_product = record.product_path
 		var/premium_sanity = round(initial(potential_product.custom_premium_price))
 		if(premium_sanity)
 			record.custom_premium_price = round(premium_sanity * SSeconomy.inflation_value())
@@ -430,9 +442,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 		return TRUE
 	if(anchored)
 		default_deconstruction_screwdriver(user, icon_state, icon_state, I)
-		cut_overlays()
-		if(panel_open)
-			add_overlay("[initial(icon_state)]-panel")
+		update_appearance()
 		updateUsrDialog()
 	else
 		to_chat(user, span_warning("You must first secure [src]."))
@@ -511,13 +521,19 @@ GLOBAL_LIST_EMPTY(vending_products)
 			var/dump_path = R.product_path
 			if(!dump_path)
 				continue
-
+			if(R.amount > LAZYLEN(R.returned_products)) //always give out new stuff that costs before free returned stuff, because of the risk getting gibbed involved
+				new dump_path(get_turf(src))
+			else
+				var/obj/returned_obj_to_dump = LAZYACCESS(R.returned_products, LAZYLEN(R.returned_products)) //first in, last out
+				LAZYREMOVE(R.returned_products, returned_obj_to_dump)
+				returned_obj_to_dump.forceMove(get_turf(src))
 			R.amount--
-			new dump_path(get_turf(src))
 			break
 
 ///Tilts ontop of the atom supplied, if crit is true some extra shit can happen. Returns TRUE if it dealt damage to something.
 /obj/machinery/vending/proc/tilt(atom/fatty, crit=FALSE)
+	if(QDELETED(src) || !has_gravity(src))
+		return
 	visible_message(span_danger("[src] tips over!"))
 	tilted = TRUE
 	layer = ABOVE_MOB_LAYER
@@ -566,7 +582,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 							span_userdanger("You are pinned down by [src]!"))
 					if(3) // glass candy
 						crit_rebate = 50
-						for(var/i = 0, i < num_shards, i++)
+						for(var/i in 1 to num_shards)
 							var/obj/item/shard/shard = new /obj/item/shard(get_turf(C))
 							shard.embedding = list(embed_chance = 100, ignore_throwspeed_threshold = TRUE, impact_pain_mult=1, pain_chance=5)
 							shard.updateEmbedding()
@@ -644,14 +660,21 @@ GLOBAL_LIST_EMPTY(vending_products)
 	. = TRUE
 	if(!user.transferItemToLoc(I, src))
 		return FALSE
+	to_chat(user, span_notice("You insert [I] into [src]'s input compartment."))
+
+	for(var/datum/data/vending_product/product_datum in product_records + coin_records + hidden_records)
+		if(ispath(I.type, product_datum.product_path))
+			product_datum.amount++
+			LAZYADD(product_datum.returned_products, I)
+			return
+
 	if(vending_machine_input[format_text(I.name)])
 		vending_machine_input[format_text(I.name)]++
 	else
 		vending_machine_input[format_text(I.name)] = 1
-	to_chat(user, span_notice("You insert [I] into [src]'s input compartment."))
 	loaded_items++
 
-/obj/machinery/vending/unbuckle_mob(mob/living/buckled_mob, force=FALSE)
+/obj/machinery/vending/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
 	if(!force)
 		return
 	. = ..()
@@ -726,6 +749,11 @@ GLOBAL_LIST_EMPTY(vending_products)
 		return
 
 	return ..()
+
+/obj/machinery/vending/attack_robot_secondary(mob/user, list/modifiers)
+	. = ..()
+	if (!Adjacent(user, src))
+		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /obj/machinery/vending/ui_assets(mob/user)
 	return list(
@@ -919,6 +947,8 @@ GLOBAL_LIST_EMPTY(vending_products)
 			price_to_use = max(round(price_to_use * VENDING_DISCOUNT), 1) //No longer free, but signifigantly cheaper.
 		if(coin_records.Find(R) || hidden_records.Find(R))
 			price_to_use = R.custom_premium_price ? R.custom_premium_price : extra_price
+		if(LAZYLEN(R.returned_products))
+			price_to_use = 0 //returned items are free
 		if(price_to_use && !account.adjust_money(-price_to_use))
 			say("You do not possess the funds to purchase [R.name].")
 			flick(icon_deny,src)
@@ -938,7 +968,13 @@ GLOBAL_LIST_EMPTY(vending_products)
 	if(icon_vend) //Show the vending animation if needed
 		flick(icon_vend,src)
 	playsound(src, 'sound/machines/machine_vend.ogg', 50, TRUE, extrarange = -3)
-	var/obj/item/vended_item = new R.product_path(get_turf(src))
+	var/obj/item/vended_item
+	if(!LAZYLEN(R.returned_products)) //always give out free returned stuff first, e.g. to avoid walling a traitor objective in a bag behind paid items
+		vended_item = new R.product_path(get_turf(src))
+	else
+		vended_item = LAZYACCESS(R.returned_products, LAZYLEN(R.returned_products)) //first in, last out
+		LAZYREMOVE(R.returned_products, vended_item)
+		vended_item.forceMove(get_turf(src))
 	if(greyscale_colors)
 		vended_item.set_greyscale(colors=greyscale_colors)
 	R.amount--
@@ -1006,9 +1042,13 @@ GLOBAL_LIST_EMPTY(vending_products)
 		var/dump_path = R.product_path
 		if(!dump_path)
 			continue
-
+		if(R.amount > LAZYLEN(R.returned_products)) //always throw new stuff that costs before free returned stuff, because of the hacking effort and time between throws involved
+			throw_item = new dump_path(loc)
+		else
+			throw_item = LAZYACCESS(R.returned_products, LAZYLEN(R.returned_products)) //first in, last out
+			throw_item.forceMove(loc)
+			LAZYREMOVE(R.returned_products, throw_item)
 		R.amount--
-		throw_item = new dump_path(loc)
 		break
 	if(!throw_item)
 		return FALSE
@@ -1057,6 +1097,9 @@ GLOBAL_LIST_EMPTY(vending_products)
  * * user - the user doing the loading
  */
 /obj/machinery/vending/proc/canLoadItem(obj/item/I, mob/user)
+	if((I.type in products) || (I.type in premium) || (I.type in contraband))
+		return TRUE
+	to_chat(user, span_warning("[src] does not accept [I]!"))
 	return FALSE
 
 /obj/machinery/vending/hitby(atom/movable/AM, skipcatch, hitpush, blocked, datum/thrownthing/throwingdatum)
@@ -1090,6 +1133,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 	var/max_loaded_items = 20
 	/// Base64 cache of custom icons.
 	var/list/base64_cache = list()
+	panel_type = "panel20"
 
 /obj/machinery/vending/custom/compartmentLoadAccessCheck(mob/user)
 	. = FALSE
@@ -1122,7 +1166,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 		if(vending_machine_input[O] > 0)
 			var/base64
 			var/price = 0
-			for(var/obj/T in contents)
+			for(var/obj/item/T in contents)
 				if(format_text(T.name) == O)
 					price = T.custom_price
 					if(!base64)
@@ -1151,7 +1195,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 			if(!vend_ready)
 				return
 			var/N = params["item"]
-			var/obj/S
+			var/obj/item/S
 			vend_ready = FALSE
 			var/obj/item/card/id/C
 			if(isliving(usr))
@@ -1213,9 +1257,9 @@ GLOBAL_LIST_EMPTY(vending_products)
 
 	if(compartmentLoadAccessCheck(user))
 		if(istype(I, /obj/item/pen))
-			name = stripped_input(user,"Set name","Name", name, 20)
-			desc = stripped_input(user,"Set description","Description", desc, 60)
-			slogan_list += stripped_input(user,"Set slogan","Slogan","Epic", 60)
+			name = tgui_input_text(user, "Set name", "Name", name, 20)
+			desc = tgui_input_text(user, "Set description", "Description", desc, 60)
+			slogan_list += tgui_input_text(user, "Set slogan", "Slogan", "Epic", 60)
 			last_slogan = world.time + rand(0, slogan_delay)
 			return
 
@@ -1252,7 +1296,10 @@ GLOBAL_LIST_EMPTY(vending_products)
 	var/price = 1
 
 /obj/item/price_tagger/attack_self(mob/user)
-	price = max(1, round(input(user,"set price","price") as num|null, 1))
+	var/chosen_price = tgui_input_number(user, "Set price", "Price", price)
+	if(isnull(chosen_price))
+		return
+	price = round(chosen_price)
 	to_chat(user, span_notice(" The [src] will now give things a [price] cr tag."))
 
 /obj/item/price_tagger/afterattack(atom/target, mob/user, proximity)
@@ -1267,6 +1314,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 /obj/machinery/vending/custom/greed //name and like decided by the spawn
 	icon_state = "greed"
 	icon_deny = "greed-deny"
+	panel_type = "panel4"
 	light_mask = "greed-light-mask"
 	custom_materials = list(/datum/material/gold = MINERAL_MATERIAL_AMOUNT * 5)
 
@@ -1275,7 +1323,7 @@ GLOBAL_LIST_EMPTY(vending_products)
 	//starts in a state where you can move it
 	panel_open = TRUE
 	set_anchored(FALSE)
-	add_overlay("[initial(icon_state)]-panel")
+	add_overlay(panel_type)
 	//and references the deity
 	name = "[GLOB.deity]'s Consecrated Vendor"
 	desc = "A vending machine created by [GLOB.deity]."

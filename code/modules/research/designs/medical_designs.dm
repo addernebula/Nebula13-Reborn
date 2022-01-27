@@ -5,7 +5,7 @@
 /datum/design/healthanalyzer
 	name = "Health Analyzer"
 	id = "healthanalyzer"
-	build_type =  PROTOLATHE | AWAY_LATHE
+	build_type = PROTOLATHE | AWAY_LATHE
 	materials = list(/datum/material/iron = 500, /datum/material/glass = 50)
 	build_path = /obj/item/healthanalyzer
 	category = list("Medical Designs")
@@ -401,8 +401,6 @@
 	category = list("Implants", "Medical Designs")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
 
-//SKYRAT EDIT REMOVAL BEGIN - Noxray
-/*
 /datum/design/cyberimp_xray
 	name = "X-ray Eyes"
 	desc = "These cybernetic eyes will give you X-ray vision. Blinking is futile."
@@ -424,8 +422,6 @@
 	build_path = /obj/item/organ/eyes/robotic/thermals
 	category = list("Implants", "Medical Designs")
 	departmental_flags = DEPARTMENTAL_FLAG_MEDICAL
-*/
-//SKYRAT EDIT REMOVAL END - Noxray
 
 /datum/design/cyberimp_antidrop
 	name = "Anti-Drop Implant"

@@ -1,6 +1,7 @@
 /datum/job/expeditionary_trooper
-	title = "Vanguard Operative"
-	department_head = list("Captain")
+	title = JOB_VANGUARD_OPERATIVE
+	description = "Explore gateways, watch your friends die, find all the loot."
+	department_head = list(JOB_CAPTAIN)
 	faction = FACTION_STATION
 	total_positions = 4
 	spawn_positions = 4
@@ -33,8 +34,8 @@
 
 /datum/job/expeditionary_trooper/after_spawn(mob/living/carbon/human/H, mob/M)
 	. = ..()
-	to_chat(M, "<span class='redtext'>As a Vanguard Operative you are not part of security! You must not perform security duties unless absolutely nessecary. \
-	Do not valid hunt using your equipment. Use common sense. Failure to follow these simple rules will result in a job ban.")
+	to_chat(M, span_redtext("As a Vanguard Operative you are not part of security! You must not perform security duties unless absolutely nessecary. \
+	Do not valid hunt using your equipment. Use common sense. Failure to follow these simple rules will result in a job ban."))
 
 /datum/outfit/job/expeditionary_trooper
 	name = "Vanguard Operative"
@@ -60,7 +61,8 @@
 
 /obj/effect/landmark/start/expeditionary_corps
 	name = "Vanguard Operative"
-	icon_state = "Security Officer"
+	icon_state = "Vanguard Operative"
+	icon = 'modular_skyrat/master_files/icons/mob/landmarks.dmi'
 
 /obj/item/pda/expeditionary_corps
 	greyscale_colors = "#891417#000099"
@@ -125,7 +127,6 @@
 /obj/structure/closet/crate/secure/exp_corps/PopulateContents()
 	new /obj/item/storage/firstaid/tactical(src)
 	new /obj/item/storage/box/expeditionary_survival(src)
-	new /obj/item/clothing/suit/space/hardsuit/expeditionary_corps(src)
 	new /obj/item/radio(src)
 	new /obj/item/melee/tomahawk(src)
 	new /obj/item/clothing/gloves/color/black/expeditionary_corps(src)
@@ -138,7 +139,6 @@
 /obj/structure/closet/crate/secure/exp_corps/pointman/PopulateContents()
 	new /obj/item/storage/firstaid/regular(src)
 	new /obj/item/storage/box/expeditionary_survival(src)
-	new /obj/item/clothing/suit/space/hardsuit/expeditionary_corps(src)
 	new /obj/item/radio(src)
 	new /obj/item/melee/tomahawk(src)
 	new /obj/item/clothing/gloves/color/black/expeditionary_corps(src)
@@ -152,7 +152,6 @@
 /obj/structure/closet/crate/secure/exp_corps/field_medic/PopulateContents()
 	new /obj/item/storage/firstaid/expeditionary(src)
 	new /obj/item/storage/box/expeditionary_survival(src)
-	new /obj/item/clothing/suit/space/hardsuit/expeditionary_corps(src)
 	new /obj/item/radio(src)
 	new /obj/item/clothing/gloves/color/latex/nitrile/expeditionary_corps(src)
 	new /obj/item/clothing/head/helmet/expeditionary_corps(src)
@@ -166,7 +165,6 @@
 /obj/structure/closet/crate/secure/exp_corps/combat_tech/PopulateContents()
 	new /obj/item/storage/firstaid/emergency(src)
 	new /obj/item/storage/box/expeditionary_survival(src)
-	new /obj/item/clothing/suit/space/hardsuit/expeditionary_corps(src)
 	new /obj/item/radio(src)
 	new /obj/item/melee/tomahawk(src)
 	new /obj/item/clothing/gloves/color/chief_engineer/expeditionary_corps(src)
@@ -181,7 +179,6 @@
 /obj/structure/closet/crate/secure/exp_corps/marksman/PopulateContents()
 	new /obj/item/storage/firstaid/regular(src)
 	new /obj/item/storage/box/expeditionary_survival(src)
-	new /obj/item/clothing/suit/space/hardsuit/expeditionary_corps(src)
 	new /obj/item/radio(src)
 	new /obj/item/storage/bag/ammo/marksman(src)
 	new /obj/item/clothing/gloves/color/black/expeditionary_corps(src)

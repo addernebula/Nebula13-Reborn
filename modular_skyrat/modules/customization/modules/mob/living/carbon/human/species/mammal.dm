@@ -1,7 +1,7 @@
 /datum/species/mammal
 	name = "Anthromorph" //Called so because the species is so much more universal than just mammals
 	id = SPECIES_MAMMAL
-	default_color = "4B4B4B"
+	default_color = "#4B4B4B"
 	species_traits = list(
 		MUTCOLORS,
 		EYECOLOR,
@@ -13,7 +13,8 @@
 	)
 	inherent_traits = list(
 		TRAIT_ADVANCEDTOOLUSER,
-		TRAIT_CAN_STRIP
+		TRAIT_CAN_STRIP,
+		TRAIT_CAN_USE_FLIGHT_POTION,
 	)
 	inherent_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	mutant_bodyparts = list()
@@ -30,9 +31,12 @@
 		"neck_acc" = "None"
 	)
 	attack_verb = "slash"
+	attack_effect = ATTACK_EFFECT_CLAW
 	attack_sound = 'sound/weapons/slash.ogg'
 	miss_sound = 'sound/weapons/slashmiss.ogg'
-	liked_food = GROSS | MEAT | FRIED
+	liked_food = GRAIN | RAW | MEAT
+	disliked_food = NUTS | CLOTH
+	toxic_food = TOXIC
 	payday_modifier = 0.75
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
 	limbs_icon = 'modular_skyrat/master_files/icons/mob/species/mammal_parts_greyscale.dmi'
@@ -45,33 +49,33 @@
 	var/random = rand(1,7)
 	switch(random)
 		if(1)
-			main_color = "FFF"
-			second_color = "333"
-			third_color = "333"
+			main_color = "#FFFFFF"
+			second_color = "#333333"
+			third_color = "#333333"
 		if(2)
-			main_color = "FFD"
-			second_color = "D61"
-			third_color = "A52"
+			main_color = "#FFFFDD"
+			second_color = "#DD6611"
+			third_color = "#AA5522"
 		if(3)
-			main_color = "D61"
-			second_color = "FFF"
-			third_color = "D61"
+			main_color = "#DD6611"
+			second_color = "#FFFFFF"
+			third_color = "#DD6611"
 		if(4)
-			main_color = "CCC"
-			second_color = "FFF"
-			third_color = "FFF"
+			main_color = "#CCCCCC"
+			second_color = "#FFFFFF"
+			third_color = "#FFFFFF"
 		if(5)
-			main_color = "A52"
-			second_color = "C83"
-			third_color = "FFF"
+			main_color = "#AA5522"
+			second_color = "#CC8833"
+			third_color = "#FFFFFF"
 		if(6)
-			main_color = "FFD"
-			second_color = "FEC"
-			third_color = "FDB"
+			main_color = "#FFFFDD"
+			second_color = "#FFEECC"
+			third_color = "#FFDDBB"
 		if(7) //Oh no you've rolled the sparkle dog
-			main_color = random_short_color()
-			second_color = random_short_color()
-			third_color = random_short_color()
+			main_color = "#[random_color()]"
+			second_color = "#[random_color()]"
+			third_color = "#[random_color()]"
 	returned["mcolor"] = main_color
 	returned["mcolor2"] = second_color
 	returned["mcolor3"] = third_color

@@ -5,7 +5,6 @@
 	ears = /obj/item/radio/headset
 	uniform = /obj/item/clothing/under/syndicate
 	suit = /obj/item/clothing/suit/armor/vest/ctf
-	toggle_helmet = FALSE // see the whites of their eyes
 	shoes = /obj/item/clothing/shoes/combat
 	gloves = /obj/item/clothing/gloves/combat
 	id = /obj/item/card/id/away
@@ -47,7 +46,7 @@
 	// Make items in the hands NODROP
 	for(var/obj/item/held_item in human_to_equip.held_items)
 		no_drops += held_item
-	listclearnulls(no_drops) // For any slots we didn't have filled
+	list_clear_nulls(no_drops) // For any slots we didn't have filled
 	// Apply TRAIT_NODROP to everything
 	for(var/obj/item/item_to_nodrop as anything in no_drops)
 		ADD_TRAIT(item_to_nodrop, TRAIT_NODROP, CAPTURE_THE_FLAG_TRAIT)

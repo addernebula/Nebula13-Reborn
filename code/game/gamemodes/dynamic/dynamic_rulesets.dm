@@ -4,7 +4,7 @@
 /datum/dynamic_ruleset
 	/// For admin logging and round end screen.
 	// If you want to change this variable name, the force latejoin/midround rulesets
-	// to not use sortNames.
+	// to not use sort_names.
 	var/name = ""
 	/// For admin logging and round end screen, do not change this unless making a new rule type.
 	var/ruletype = ""
@@ -206,6 +206,10 @@
 		if(!candidate_client.prefs?.read_preference(/datum/preference/toggle/be_antag))
 			candidates.Remove(candidate_player)
 			continue
+
+		if(is_banned_from(candidate_client.ckey, BAN_ANTAGONIST))
+			candidates.Remove(candidate_player)
+			continue
 		//SKYRAT EDIT END
 
 		if(candidate_client.get_remaining_days(minimum_required_age) > 0)
@@ -230,7 +234,8 @@
 			var/exclusive_candidate = FALSE
 			for(var/role in exclusive_roles)
 				var/datum/job/job = SSjob.GetJob(role)
-				if((role in candidate_client.prefs.job_preferences) && !is_banned_from(candidate_player.ckey, role) && !job.required_playtime_remaining(candidate_client))
+
+				if((role in candidate_client.prefs.job_preferences) && SSjob.check_job_eligibility(candidate_player, job, "Dynamic Roundstart TC", add_job_to_log = TRUE)==JOB_AVAILABLE)
 					exclusive_candidate = TRUE
 					break
 

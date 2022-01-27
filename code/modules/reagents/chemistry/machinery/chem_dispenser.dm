@@ -124,18 +124,18 @@
 
 /obj/machinery/chem_dispenser/Initialize(mapload)
 	. = ..()
-	dispensable_reagents = sortList(dispensable_reagents, /proc/cmp_reagents_asc)
+	dispensable_reagents = sort_list(dispensable_reagents, /proc/cmp_reagents_asc)
 	if(emagged_reagents)
-		emagged_reagents = sortList(emagged_reagents, /proc/cmp_reagents_asc)
+		emagged_reagents = sort_list(emagged_reagents, /proc/cmp_reagents_asc)
 	if(upgrade_reagents)
-		upgrade_reagents = sortList(upgrade_reagents, /proc/cmp_reagents_asc)
+		upgrade_reagents = sort_list(upgrade_reagents, /proc/cmp_reagents_asc)
 	//SKYRAT EDIT ADDITION BEGIN - Skyrat-SS13/Skyrat-tg#1931
 	if(upgrade_reagents)
-		upgrade_reagents = sortList(upgrade_reagents, /proc/cmp_reagents_asc)
+		upgrade_reagents = sort_list(upgrade_reagents, /proc/cmp_reagents_asc)
 	if(upgrade_reagents2)
-		upgrade_reagents2 = sortList(upgrade_reagents2, /proc/cmp_reagents_asc)
+		upgrade_reagents2 = sort_list(upgrade_reagents2, /proc/cmp_reagents_asc)
 	if(upgrade_reagents3)
-		upgrade_reagents3 = sortList(upgrade_reagents3, /proc/cmp_reagents_asc)
+		upgrade_reagents3 = sort_list(upgrade_reagents3, /proc/cmp_reagents_asc)
 	//SKYRAT EDIT ADDITION END
 	if(is_operational)
 		begin_processing()
@@ -372,7 +372,7 @@
 		if("save_recording")
 			if(!is_operational)
 				return
-			var/name = stripped_input(usr,"Name","What do you want to name this recipe?", "Recipe", MAX_NAME_LEN)
+			var/name = tgui_input_text(usr, "What do you want to name this recipe?", "Recipe Name", MAX_NAME_LEN)
 			if(!usr.canUseTopic(src, !issilicon(usr)))
 				return
 			if(saved_recipes[name] && tgui_alert(usr, "\"[name]\" already exists, do you want to overwrite it?",, list("Yes", "No")) == "No")
@@ -382,7 +382,7 @@
 					var/reagent_id = GLOB.name2reagent[translate_legacy_chem_id(reagent)]
 					if(!dispensable_reagents.Find(reagent_id))
 						visible_message(span_warning("[src] buzzes."), span_hear("You hear a faint buzz."))
-						to_chat(usr, "<span class ='danger'>[src] cannot find <b>[reagent]</b>!</span>")
+						to_chat(usr, span_warning("[src] cannot find <b>[reagent]</b>!"))
 						playsound(src, 'sound/machines/buzz-two.ogg', 50, TRUE)
 						return
 				saved_recipes[name] = recording_recipe
@@ -449,7 +449,7 @@
 	for(var/i in 1 to total)
 		Q.add_reagent(pick(dispensable_reagents), 10, reagtemp = dispensed_temperature)
 	R += Q
-	chem_splash(get_turf(src), 3, R)
+	chem_splash(get_turf(src), null, 3, R)
 	if(beaker?.reagents)
 		beaker.reagents.remove_all()
 	cell.use(total/powerefficiency)
@@ -618,6 +618,7 @@
 		/datum/reagent/consumable/ethanol/vodka,
 		/datum/reagent/consumable/ethanol/gin,
 		/datum/reagent/consumable/ethanol/rum,
+		/datum/reagent/consumable/ethanol/navy_rum,
 		/datum/reagent/consumable/ethanol/tequila,
 		/datum/reagent/consumable/ethanol/vermouth,
 		/datum/reagent/consumable/ethanol/cognac,
@@ -628,6 +629,7 @@
 		/datum/reagent/consumable/ethanol/creme_de_cacao,
 		/datum/reagent/consumable/ethanol/creme_de_coconut,
 		/datum/reagent/consumable/ethanol/triple_sec,
+		/datum/reagent/consumable/ethanol/curacao,
 		/datum/reagent/consumable/ethanol/sake,
 		/datum/reagent/consumable/ethanol/applejack, // SKYRAT EDIT
 		/datum/reagent/consumable/ethanol/synthanol // SKYRAT EDIT
@@ -740,5 +742,7 @@
 		/datum/reagent/drug/space_drugs,
 		/datum/reagent/toxin,
 		/datum/reagent/toxin/plasma,
-		/datum/reagent/uranium
+		/datum/reagent/uranium,
+		/datum/reagent/consumable/liquidelectricity/enriched,
+		/datum/reagent/medicine/c2/synthflesh
 	)

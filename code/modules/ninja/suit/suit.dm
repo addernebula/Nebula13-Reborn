@@ -15,7 +15,7 @@
 	inhand_icon_state = "s-ninja_suit"
 	allowed = list(/obj/item/gun, /obj/item/ammo_box, /obj/item/ammo_casing, /obj/item/melee/baton, /obj/item/restraints/handcuffs, /obj/item/tank/internals, /obj/item/stock_parts/cell)
 	resistance_flags = LAVA_PROOF | ACID_PROOF
-	armor = list(MELEE = 40, BULLET = 30, LASER = 20,ENERGY = 30, BOMB = 30, BIO = 30, RAD = 30, FIRE = 100, ACID = 100)
+	armor = list(MELEE = 40, BULLET = 30, LASER = 20,ENERGY = 30, BOMB = 30, BIO = 30, FIRE = 100, ACID = 100)
 	strip_delay = 12
 	slowdown = 0 // SKYRAT EDIT ADDITION
 	min_cold_protection_temperature = SPACE_SUIT_MIN_TEMP_PROTECT
@@ -64,7 +64,7 @@
 		return
 	if(!user == affecting)
 		return
-	. += "All systems operational. Current energy capacity: <B>[DisplayEnergy(cell.charge)]</B>.\n"+\
+	. += "All systems operational. Current energy capacity: <B>[display_energy(cell.charge)]</B>.\n"+\
 	"The CLOAK-tech device is <B>[stealth?"active":"inactive"]</B>.\n"+\
 	"[a_boost?"An adrenaline boost is available to use.":"There is no adrenaline boost available.  Try refilling the suit with 20 units of radium."]"
 

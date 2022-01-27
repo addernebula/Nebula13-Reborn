@@ -8,7 +8,7 @@
 	active_power_usage = 300
 	max_integrity = 200
 	integrity_failure = 0.5
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, RAD = 0, FIRE = 40, ACID = 20)
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0, ENERGY = 0, BOMB = 0, BIO = 0, FIRE = 40, ACID = 20)
 	var/brightness_on = 1
 	var/icon_keyboard = "generic_key"
 	var/icon_screen = "generic"
@@ -28,6 +28,7 @@
 		return FALSE
 	return TRUE
 
+/* SKYRAT EDIT REMOVAL - MOVED TO MODULAR (modular_skyrat/modules/connecting_computer/code/_computer.dm)
 /obj/machinery/computer/update_overlays()
 	. = ..()
 	if(icon_keyboard)
@@ -44,6 +45,7 @@
 
 	. += mutable_appearance(icon, overlay_state)
 	. += emissive_appearance(icon, overlay_state)
+*/
 
 /obj/machinery/computer/power_change()
 	. = ..()

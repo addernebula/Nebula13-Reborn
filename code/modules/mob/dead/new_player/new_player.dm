@@ -103,18 +103,21 @@
 	var/less_input_message
 	if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP])
 		less_input_message = " - Notice: Observer freelook is currently disabled."
-	var/this_is_like_playing_right = alert(usr, "Are you sure you wish to observe? You will not be able to play this round![less_input_message]","Player Setup", "Yes", "No")
+	//SKYRAT EDIT CHANGE BEGIN - NOTICE_REMOVE
+	//var/this_is_like_playing_right = alert(usr, "Are you sure you wish to observe? You will not be able to play this round![less_input_message]", "Observe", "Yes", "No") - SKYRAT EDIT - ORIGINAL
+	var/this_is_like_playing_right = alert(usr, "Are you sure you wish to observe?[less_input_message]", "Observe", "Yes", "No")
+	//SKYRAT EDIT CHANGE END
 
-	if(QDELETED(src) || !src.client || this_is_like_playing_right != "Yes")
+	if(this_is_like_playing_right != "Yes")
+		return FALSE
+	if(QDELETED(src) || !src.client)
 		ready = PLAYER_NOT_READY
-		src << browse(null, "window=playersetup") //closes the player setup window
 		return FALSE
 
 	var/mob/dead/observer/observer = new()
 	spawning = TRUE
 
 	observer.started_as_observer = TRUE
-	close_spawn_windows()
 	var/obj/effect/landmark/observer_start/O = locate(/obj/effect/landmark/observer_start) in GLOB.landmarks_list
 	to_chat(src, span_notice("Now teleporting."))
 	if (O)
@@ -151,13 +154,19 @@
 		if(JOB_UNAVAILABLE_SLOTFULL)
 			return "[jobtitle] is already filled to capacity."
 		//SKYRAT EDIT ADDITION
+		if(JOB_NOT_VETERAN)
+			return "You need to be veteran to join as [jobtitle]."
 		if(JOB_UNAVAILABLE_QUIRK)
 			return "[jobtitle] is restricted from your quirks."
 		if(JOB_UNAVAILABLE_LANGUAGE)
 			return "[jobtitle] is restricted from your languages."
-		if(JOB_NOT_VETERAN)
-			return "You need to be veteran to join as [jobtitle]."
+		if(JOB_UNAVAILABLE_SPECIES)
+			return "[jobtitle] is restricted from your species."
+		if(JOB_UNAVAILABLE_FLAVOUR)
+			return "[jobtitle] requires you to have flavour text for your character."
 		//SKYRAT EDIT END
+		if(JOB_UNAVAILABLE_ANTAG_INCOMPAT)
+			return "[jobtitle] is not compatible with some antagonist role assigned to you."
 	return "Error: Unknown job availability."
 
 /mob/dead/new_player/proc/IsJobUnavailable(rank, latejoin = FALSE)
@@ -173,14 +182,11 @@
 					return JOB_UNAVAILABLE_SLOTFULL
 		else
 			return JOB_UNAVAILABLE_SLOTFULL
-	if(is_banned_from(ckey, rank))
-		return JOB_UNAVAILABLE_BANNED
-	if(QDELETED(src))
-		return JOB_UNAVAILABLE_GENERIC
-	if(!job.player_old_enough(client))
-		return JOB_UNAVAILABLE_ACCOUNTAGE
-	if(job.required_playtime_remaining(client))
-		return JOB_UNAVAILABLE_PLAYTIME
+
+	var/eligibility_check = SSjob.check_job_eligibility(src, job, "Mob IsJobUnavailable")
+	if(eligibility_check != JOB_AVAILABLE)
+		return eligibility_check
+
 	if(latejoin && !job.special_check_latejoin(client))
 		return JOB_UNAVAILABLE_GENERIC
 	//SKYRAT EDIT ADDITION
@@ -190,6 +196,8 @@
 		return JOB_UNAVAILABLE_QUIRK
 	if(job.veteran_only && !is_veteran_player(client))
 		return JOB_NOT_VETERAN
+	if(job.has_banned_species(client.prefs))
+		return JOB_UNAVAILABLE_SPECIES
 	//SKYRAT EDIT END
 	return JOB_AVAILABLE
 
@@ -201,7 +209,6 @@
 		return FALSE
 
 	if(SSshuttle.arrivals)
-		close_spawn_windows() //In case we get held up
 		if(SSshuttle.arrivals.damaged && CONFIG_GET(flag/arrivals_shuttle_require_safe_latejoin))
 			src << tgui_alert(usr,"The arrivals shuttle is currently malfunctioning! You cannot join.")
 			return FALSE
@@ -215,7 +222,9 @@
 
 	var/datum/job/job = SSjob.GetJob(rank)
 
-	SSjob.AssignRole(src, job, TRUE)
+	if(!SSjob.AssignRole(src, job, TRUE))
+		tgui_alert(usr, "There was an unexpected error putting you into your requested job. If you cannot join with any job, you should contact an admin.")
+		return FALSE
 
 	mind.late_joiner = TRUE
 	var/atom/destination = mind.assigned_role.get_latejoin_spawn_point()
@@ -237,7 +246,7 @@
 	if(is_captain_job(job))
 		is_captain = IS_FULL_CAPTAIN
 	// If we don't have an assigned cap yet, check if this person qualifies for some from of captaincy.
-	else if(!SSjob.assigned_captain && ishuman(character) && SSjob.chain_of_command[rank] && !is_banned_from(ckey, list("Captain")))
+	else if(!SSjob.assigned_captain && ishuman(character) && SSjob.chain_of_command[rank] && !is_banned_from(ckey, list(JOB_CAPTAIN)))
 		is_captain = IS_ACTING_CAPTAIN
 	if(is_captain != IS_NOT_CAPTAIN)
 		minor_announce(job.get_captaincy_announcement(character))
@@ -253,11 +262,14 @@
 		humanc = character //Let's retypecast the var to be human,
 
 	if(humanc) //These procs all expect humans
-		GLOB.data_core.manifest_inject(humanc)
+		// BEGIN SKYRAT EDIT CHANGE - ALTERNATIVE_JOB_TITLES
+		var/chosen_rank = humanc.client?.prefs.alt_job_titles[rank] || rank
+		GLOB.data_core.manifest_inject(humanc, humanc.client)
 		if(SSshuttle.arrivals)
-			SSshuttle.arrivals.QueueAnnounce(humanc, rank)
+			SSshuttle.arrivals.QueueAnnounce(humanc, chosen_rank)
 		else
-			announce_arrival(humanc, rank)
+			announce_arrival(humanc, chosen_rank)
+		// END SKYRAT EDIT CHANGE - customization
 		AddEmploymentContract(humanc)
 
 		humanc.increment_scar_slot()
@@ -274,7 +286,7 @@
 				if(SHUTTLE_RECALL, SHUTTLE_IDLE)
 					SSticker.mode.make_antag_chance(humanc)
 				if(SHUTTLE_CALL)
-					if(SSshuttle.emergency.timeLeft(1) > initial(SSshuttle.emergencyCallTime)*0.5)
+					if(SSshuttle.emergency.timeLeft(1) > initial(SSshuttle.emergency_call_time)*0.5)
 						SSticker.mode.make_antag_chance(humanc)
 
 	if((job.job_flags & JOB_ASSIGN_QUIRKS) && humanc && CONFIG_GET(flag/roundstart_traits))
@@ -287,6 +299,8 @@
 	//SKYRAT EDIT ADDITION
 	if(humanc)
 		for(var/datum/loadout_item/item as anything in loadout_list_to_datums(humanc?.client?.prefs?.loadout_list))
+			if (item.restricted_roles && length(item.restricted_roles) && !(job.title in item.restricted_roles))
+				continue
 			item.post_equip_item(humanc.client?.prefs, humanc)
 	//SKYRAT EDIT END
 
@@ -354,7 +368,6 @@
 /// Creates, assigns and returns the new_character to spawn as. Assumes a valid mind.assigned_role exists.
 /mob/dead/new_player/proc/create_character(atom/destination)
 	spawning = TRUE
-	close_spawn_windows()
 
 	mind.active = FALSE //we wish to transfer the key manually
 	var/mob/living/spawning_mob = mind.assigned_role.get_spawn_mob(client, destination)
@@ -401,14 +414,6 @@
 /mob/dead/new_player/Move()
 	return 0
 
-
-/mob/dead/new_player/proc/close_spawn_windows()
-
-	src << browse(null, "window=latechoices") //closes late choices window
-	src << browse(null, "window=playersetup") //closes the player setup window
-	src << browse(null, "window=preferences") //closes job selection
-	src << browse(null, "window=mob_occupation")
-	src << browse(null, "window=latechoices") //closes late job selection
 
 // Used to make sure that a player has a valid job preference setup, used to knock players out of eligibility for anything if their prefs don't make sense.
 // A "valid job preference setup" in this situation means at least having one job set to low, or not having "return to lobby" enabled

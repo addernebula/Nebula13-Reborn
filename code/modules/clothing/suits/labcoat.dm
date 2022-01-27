@@ -18,6 +18,7 @@
 		/obj/item/reagent_containers/hypospray,
 		/obj/item/reagent_containers/pill,
 		/obj/item/reagent_containers/syringe,
+		/obj/item/gun/syringe,
 		/obj/item/sensor_device,
 		/obj/item/soap,
 		/obj/item/stack/medical,
@@ -25,8 +26,7 @@
 		/obj/item/tank/internals/emergency_oxygen,
 		/obj/item/tank/internals/plasmaman,
 		)
-	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 50, RAD = 0, FIRE = 50, ACID = 50)
-	togglename = "buttons"
+	armor = list(MELEE = 0, BULLET = 0, LASER = 0,ENERGY = 0, BOMB = 0, BIO = 50, FIRE = 50, ACID = 50)
 	species_exception = list(/datum/species/golem)
 
 /obj/item/clothing/suit/toggle/labcoat/cmo
@@ -39,7 +39,7 @@
 	. = ..()
 	allowed += list(
 		/obj/item/melee/baton/telescopic,
-		/obj/item/gun/energy/medigun, //SKYRAT EDIT MEDIGUNS
+		/obj/item/gun/energy/cell_loaded/medigun, //SKYRAT EDIT MEDIGUNS
 		/obj/item/storage/firstaid //SKYRAT EDIT - ADDITION
 	)
 
@@ -73,15 +73,27 @@
 	desc = "A suit that protects against minor chemical spills. Has an orange stripe on the shoulder."
 	icon_state = "labcoat_chem"
 
+/obj/item/clothing/suit/toggle/labcoat/chemist/Initialize(mapload)
+	. = ..()
+	allowed += /obj/item/storage/bag/chemistry
+
 /obj/item/clothing/suit/toggle/labcoat/virologist
 	name = "virologist labcoat"
 	desc = "A suit that protects against minor chemical spills. Has a green stripe on the shoulder."
 	icon_state = "labcoat_vir"
 
+/obj/item/clothing/suit/toggle/labcoat/virologist/Initialize(mapload)
+	. = ..()
+	allowed += /obj/item/storage/bag/bio
+
 /obj/item/clothing/suit/toggle/labcoat/science
 	name = "scientist labcoat"
 	desc = "A suit that protects against minor chemical spills. Has a purple stripe on the shoulder."
 	icon_state = "labcoat_sci"
+
+/obj/item/clothing/suit/toggle/labcoat/science/Initialize(mapload)
+	. = ..()
+	allowed += /obj/item/storage/bag/bio
 
 /obj/item/clothing/suit/toggle/labcoat/roboticist
 	name = "roboticist labcoat"

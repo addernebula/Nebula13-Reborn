@@ -1,3 +1,5 @@
+GLOBAL_LIST_EMPTY(cached_mutant_icon_files)
+
 /datum/sprite_accessory
 	///Unique key of an accessroy. All tails should have "tail", ears "ears" etc.
 	var/key = null
@@ -30,7 +32,7 @@
 	var/special_x_dimension
 	///Special case of whether the accessory should have a different icon, check taur genitals for example
 	var/special_icon_case
-	///Special case of applying a different color, like hardsuit tails
+	///Special case of applying a different color, like MODsuit tails
 	var/special_colorize
 	///Whether it has any extras to render, and their appropriate color sources
 	var/extra = FALSE
@@ -41,6 +43,8 @@
 	var/list/ckey_whitelist
 	///Whether this feature is genetic, and thus modifiable by DNA consoles
 	var/genetic = FALSE
+	var/uses_emissives = FALSE
+	var/color_layer_names
 
 /datum/sprite_accessory/New()
 	if(!default_color)
@@ -50,11 +54,23 @@
 			if(USE_MATRIXED_COLORS)
 				default_color = DEFAULT_MATRIXED
 			else
-				default_color = "FFF"
+				default_color = "#FFFFFF"
 	if(name == "None")
 		factual = FALSE
 	if(color_src == USE_MATRIXED_COLORS && default_color != DEFAULT_MATRIXED)
 		default_color = DEFAULT_MATRIXED
+	if (color_src == USE_MATRIXED_COLORS)
+		color_layer_names = list()
+		if (!GLOB.cached_mutant_icon_files[icon])
+			GLOB.cached_mutant_icon_files[icon] = icon_states(new /icon(icon))
+		for (var/layer in relevent_layers)
+			var/layertext = layer == BODY_BEHIND_LAYER ? "BEHIND" : (layer == BODY_ADJ_LAYER ? "ADJ" : "FRONT")
+			if ("m_[key]_[icon_state]_[layertext]_primary" in GLOB.cached_mutant_icon_files[icon])
+				color_layer_names["1"] = "primary"
+			if ("m_[key]_[icon_state]_[layertext]_secondary" in GLOB.cached_mutant_icon_files[icon])
+				color_layer_names["2"] = "secondary"
+			if ("m_[key]_[icon_state]_[layertext]_tertiary" in GLOB.cached_mutant_icon_files[icon])
+				color_layer_names["3"] = "tertiary"
 
 /datum/sprite_accessory/proc/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/BP)
 	return FALSE
@@ -112,7 +128,7 @@
 
 /datum/sprite_accessory/spines/is_hidden(mob/living/carbon/human/H, obj/item/bodypart/HD)
 	var/obj/item/organ/tail/T = H.getorganslot(ORGAN_SLOT_TAIL)
-	if(!T || (H.wear_suit && (H.try_hide_mutant_parts || H.wear_suit.flags_inv & HIDEJUMPSUIT)))
+	if(!T || (H.wear_suit && (H.try_hide_mutant_parts || H.wear_suit.flags_inv & HIDEJUMPSUIT || H.wear_suit.flags_inv & HIDESPINE)))
 		return TRUE
 	return FALSE
 
@@ -369,6 +385,10 @@
 	name = "LIZARED Underwear"
 	icon_state = "lizared"
 	use_static = TRUE
+	
+/datum/sprite_accessory/underwear/digibriefs
+	name = "Digi Briefs"
+	icon_state = "briefs_d"
 
 /datum/sprite_accessory/underwear/male_briefs
 	has_digitigrade = TRUE

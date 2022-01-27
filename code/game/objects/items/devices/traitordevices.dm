@@ -82,6 +82,10 @@ effective or pretty fucking useless.
 		..()
 	if(!irradiate)
 		return
+	var/mob/living/carbon/human/human_target = M
+	if(istype(human_target) && !used && SSradiation.wearing_rad_protected_clothing(human_target)) //intentionally not checking for TRAIT_RADIMMUNE here so that tatortot can still fuck up and waste their cooldown.
+		to_chat(user, span_warning("[M]'s clothing is fully protecting [M.p_them()] from irradiation!"))
+		return
 	if(!used)
 		log_combat(user, M, "irradiated", src)
 		var/cooldown = get_cooldown()
@@ -91,15 +95,14 @@ effective or pretty fucking useless.
 		addtimer(VARSET_CALLBACK(src, icon_state, "health"), cooldown)
 		to_chat(user, span_warning("Successfully irradiated [M]."))
 		addtimer(CALLBACK(src, .proc/radiation_aftereffect, M, intensity), (wavelength+(intensity*4))*5)
-	else
-		to_chat(user, span_warning("The radioactive microlaser is still recharging."))
+		return
+	to_chat(user, span_warning("The radioactive microlaser is still recharging."))
 
 /obj/item/healthanalyzer/rad_laser/proc/radiation_aftereffect(mob/living/M, passed_intensity)
 	if(QDELETED(M) || !ishuman(M) || HAS_TRAIT(M, TRAIT_RADIMMUNE))
 		return
 	if(passed_intensity >= 5)
 		M.apply_effect(round(passed_intensity/0.075), EFFECT_UNCONSCIOUS) //to save you some math, this is a round(intensity * (4/3)) second long knockout
-	M.rad_act(passed_intensity*10)
 
 /obj/item/healthanalyzer/rad_laser/proc/get_cooldown()
 	return round(max(10, (stealth*30 + intensity*5 - wavelength/4)))
@@ -258,11 +261,12 @@ effective or pretty fucking useless.
 	special_desc = "This is a black market radio jammer. Used to disrupt nearby radio communication."
 	var/active = FALSE
 	var/range = 20 //SKYRAT EDIT CHANGE - ORIGINAL:12
+	var/cell_override = /obj/item/stock_parts/cell/bluespace //SKYRAT ADDITION
 
 	//SKYRAT EDIT ADDITION BEGIN
 /obj/item/jammer/ComponentInitialize()
 	. = ..()
-	AddComponent(/datum/component/cell, null, CALLBACK(src, .proc/turn_off))
+	AddComponent(/datum/component/cell, cell_override, CALLBACK(src, .proc/turn_off))
 
 /obj/item/jammer/proc/turn_on()
 	active = TRUE
@@ -299,7 +303,7 @@ effective or pretty fucking useless.
 	else
 		turn_off() //SKYRAT EDIT CHANGE
 
-	to_chat(user,"<span class='notice'>You [active ? "deactivate" : "activate"] [src].</span>") //SKYRAT EDIT MOVE
+	to_chat(user,"<span class='notice'>You [active ? "activate" : "deactivate"] [src].</span>") //SKYRAT EDIT MOVE
 	update_appearance()
 
 /obj/item/storage/toolbox/emergency/turret

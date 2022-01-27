@@ -13,13 +13,13 @@
 
 //The code execution of the emote datum is located at code/datums/emotes.dm
 /mob/proc/emote(act, m_type = null, message = null, intentional = FALSE, force_silence = FALSE)
-	act = lowertext(act)
 	var/param = message
 	var/custom_param = findchar(act, " ")
 	if(custom_param)
 		param = copytext(act, custom_param + length(act[custom_param]))
 		act = copytext(act, 1, custom_param)
 
+	act = lowertext(act)
 	var/list/key_emotes = GLOB.emote_list[act]
 
 	if(!length(key_emotes))
@@ -55,7 +55,7 @@
 			if(P.can_run_emote(user, status_check = FALSE , intentional = TRUE))
 				keys += P.key
 
-	keys = sortList(keys)
+	keys = sort_list(keys)
 	message += keys.Join(", ")
 	message += "."
 	message = message.Join("")

@@ -135,7 +135,7 @@
 	var/datum/loadout_item/first_misc_found
 	for(var/datum/loadout_item/item as anything in loadout_list_to_datums(owner.prefs.loadout_list))
 		if(item.category == selected_item.category)
-			if(item.category == LOADOUT_ITEM_MISC && ++num_misc_items < MAX_ALLOWED_MISC_ITEMS)
+			if((item.category == LOADOUT_ITEM_MISC || item.category == LOADOUT_ITEM_TOYS) && ++num_misc_items < MAX_ALLOWED_MISC_ITEMS)
 				if(!first_misc_found)
 					first_misc_found = item
 				continue
@@ -288,7 +288,7 @@
 	loadout_tabs += list(list("name" = "Misc. Under", "title" = "Uniform Slot Items (cont)", "contents" = list_to_data(GLOB.loadout_miscunders)))
 	loadout_tabs += list(list("name" = "Accessory", "title" = "Uniform Accessory Slot Items", "contents" = list_to_data(GLOB.loadout_accessory)))
 	loadout_tabs += list(list("name" = "Inhand", "title" = "In-hand Items", "contents" = list_to_data(GLOB.loadout_inhand_items)))
-	loadout_tabs += list(list("name" = "Toys", "title" = "Toys!", "contents" = list_to_data(GLOB.loadout_toys)))
+	loadout_tabs += list(list("name" = "Toys", "title" = "Toys! ([MAX_ALLOWED_MISC_ITEMS] max)", "contents" = list_to_data(GLOB.loadout_toys)))
 	loadout_tabs += list(list("name" = "Other", "title" = "Backpack Items ([MAX_ALLOWED_MISC_ITEMS] max)", "contents" = list_to_data(GLOB.loadout_pocket_items)))
 
 	data["loadout_tabs"] = loadout_tabs
@@ -318,10 +318,13 @@
 			if(!GLOB.donator_list[owner.ckey] && !is_admin(owner))
 				formatted_list.len--
 				continue
+
+		var/atom/loadout_atom = item.item_path
+
 		var/list/formatted_item = list()
 		formatted_item["name"] = item.name
 		formatted_item["path"] = item.item_path
-		formatted_item["is_greyscale"] = item.can_be_greyscale
+		formatted_item["is_greyscale"] = !!(initial(loadout_atom.greyscale_config) && initial(loadout_atom.greyscale_colors) && (initial(loadout_atom.flags_1) & IS_PLAYER_COLORABLE_1))
 		formatted_item["is_renamable"] = item.can_be_named
 		formatted_item["is_job_restricted"] = !isnull(item.restricted_roles)
 		formatted_item["is_donator_only"] = !isnull(item.donator_only)

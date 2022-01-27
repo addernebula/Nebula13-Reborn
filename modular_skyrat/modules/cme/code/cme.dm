@@ -16,9 +16,9 @@ Armageddon is truly going to fuck the station, use it sparingly.
 	name = "Coronal Mass Ejection: Random"
 	typepath = /datum/round_event/cme
 	weight = 4
-	min_players = 30
+	min_players = 60
 	max_occurrences = 1
-	earliest_start = 25 MINUTES
+	earliest_start = 30 MINUTES
 
 /datum/round_event/cme
 	startWhen = 6
@@ -190,7 +190,7 @@ Armageddon is truly going to fuck the station, use it sparingly.
 	density = FALSE
 	plane = MASSIVE_OBJ_PLANE
 	plane = ABOVE_LIGHTING_PLANE
-	CanAtmosPass = ATMOS_PASS_DENSITY
+	can_atmos_pass = ATMOS_PASS_DENSITY
 	var/timeleft = CME_MINIMAL_BUBBLE_BURST_TIME
 	var/cme_light_range_lower = CME_MINIMAL_LIGHT_RANGE_LOWER
 	var/cme_light_range_upper = CME_MINIMAL_LIGHT_RANGE_UPPER
@@ -238,7 +238,7 @@ Armageddon is truly going to fuck the station, use it sparingly.
 
 /obj/effect/cme/proc/burst()
 	if(neutralized)
-		visible_message("<span class='notice'>[src] fizzles out into nothingness.")
+		visible_message(span_notice("[src] fizzles out into nothingness."))
 		new /obj/effect/particle_effect/smoke/bad(loc)
 		qdel(src)
 		return
@@ -252,7 +252,7 @@ Armageddon is truly going to fuck the station, use it sparingly.
 
 /obj/effect/cme/armageddon/burst()
 	if(neutralized)
-		visible_message("<span class='notice'>[src] fizzles out into nothingness.")
+		visible_message(span_notice("[src] fizzles out into nothingness."))
 		new /obj/effect/particle_effect/smoke/bad(loc)
 		qdel(src)
 		return
@@ -273,7 +273,7 @@ Armageddon is truly going to fuck the station, use it sparingly.
 	color = COLOR_WHITE
 	light_color = COLOR_WHITE
 	neutralized = TRUE
-	var/atom/movable/loot = pickweight(GLOB.cme_loot_list)
+	var/atom/movable/loot = pick_weight(GLOB.cme_loot_list)
 	new loot(loc)
 
 /obj/effect/cme/extreme/anomalyNeutralize()
@@ -285,7 +285,7 @@ Armageddon is truly going to fuck the station, use it sparingly.
 	color = COLOR_WHITE
 	light_color = COLOR_WHITE
 	neutralized = TRUE
-	var/atom/movable/loot = pickweight(GLOB.cme_loot_list)
+	var/atom/movable/loot = pick_weight(GLOB.cme_loot_list)
 	new loot(loc)
 
 /obj/effect/cme/armageddon/anomalyNeutralize()
@@ -297,5 +297,5 @@ Armageddon is truly going to fuck the station, use it sparingly.
 	color = COLOR_WHITE
 	light_color = COLOR_WHITE
 	neutralized = TRUE
-	var/atom/movable/loot = pickweight(GLOB.cme_loot_list)
+	var/atom/movable/loot = pick_weight(GLOB.cme_loot_list)
 	new loot(loc)

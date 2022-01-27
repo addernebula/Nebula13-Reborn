@@ -193,16 +193,9 @@
 	name = "9mm SMG supply box"
 	desc = "Ideally contains a 9x19mm SMG with decent firerate."
 
-/obj/item/gun/ballistic/automatic/pcr/nomag
-	spawnwithmagazine = FALSE
-
 /obj/item/storage/box/gunset/pcr/PopulateContents()
 	. = ..()
-	new /obj/item/gun/ballistic/automatic/pcr/nomag(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pcr(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pcr(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pcr(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pcr(src)
+	new /obj/item/gun/energy/pcr(src)
 
 ////M112
 
@@ -210,16 +203,9 @@
 	name = "12.7x30mm DMR supply box."
 	desc = "Ideally contains an unwieldy rifle that hits like a truck."
 
-/obj/item/gun/ballistic/automatic/norwind/nomag
-	spawnwithmagazine = FALSE
-
 /obj/item/storage/box/gunset/norwind/PopulateContents()
 	. = ..()
-	new /obj/item/gun/ballistic/automatic/norwind/nomag(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/norwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/norwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/norwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/norwind(src)
+	new /obj/item/gun/energy/norwind(src)
 
 //////DTR-6
 
@@ -227,33 +213,18 @@
 	name = "6mm SPR box."
 	desc = "Ideally contains an all-around balanced special purpose rifle."
 
-/obj/item/gun/ballistic/automatic/ostwind/nomag
-	spawnwithmagazine = FALSE
-
 /obj/item/storage/box/gunset/ostwind/PopulateContents()
 	. = ..()
-	new /obj/item/gun/ballistic/automatic/ostwind/nomag(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/ostwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/ostwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/ostwind(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/ostwind(src)
-
+	new /obj/item/gun/energy/ostwind(src)
 ////////PITBULL
 
 /obj/item/storage/box/gunset/pitbull
 	name = "10mm PDW supply box"
 	desc = "Ideally contains a slow-firing 10mm Auto PDW that packs a punch."
 
-/obj/item/gun/ballistic/automatic/pitbull/nomag
-	spawnwithmagazine = FALSE
-
 /obj/item/storage/box/gunset/pitbull/PopulateContents()
 	. = ..()
-	new /obj/item/gun/ballistic/automatic/pitbull/nomag(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pitbull(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pitbull(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pitbull(src)
-	new /obj/item/ammo_box/magazine/multi_sprite/pitbull(src)
+	new /obj/item/gun/energy/pitbull(src)
 
 /////////////////
 //JOB SPECIFIC GUNSETS
@@ -381,21 +352,6 @@
 	new /obj/item/ammo_box/magazine/pepperball(src)
 	new /obj/item/ammo_box/magazine/pepperball(src)
 
-
-//Sergeants!//
-
-/obj/item/storage/box/gunset/sarge
-	name = "sergeant supply box"
-	w_class = WEIGHT_CLASS_NORMAL
-
-/obj/item/storage/box/gunset/sarge/PopulateContents()
-	new /obj/item/trim_token/security_sergeant(src)
-	new /obj/item/melee/baton/telescopic(src)
-	new /obj/item/clothing/under/rank/security/peacekeeper/sergeant(src)
-	new /obj/item/clothing/head/sec/peacekeeper/sergeant(src)
-	new /obj/item/armament_token/primary(src)
-	new /obj/item/megaphone/sec(src)
-	// . = ..()
 
 /////////////////
 //SHOTGUN GUNSETS

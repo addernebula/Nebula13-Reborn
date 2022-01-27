@@ -46,6 +46,21 @@ export type ServerSpeciesData = {
   liked_food: Food[];
   disliked_food: Food[];
   toxic_food: Food[];
+
+  veteran_only: boolean; // SKYRAT EDIT - Veteran quirks
+};
+
+export type Department = {
+  head?: string;
+};
+
+export type Job = {
+  description: string;
+  department: string;
+  // SKYRAT EDIT
+  veteran?: boolean;
+  alt_titles?: string[];
+// SKYRAT EDIT END
 };
 
 export type Quirk = {
@@ -53,9 +68,10 @@ export type Quirk = {
   icon: string;
   name: string;
   value: number;
+  veteran_only: boolean; // SKYRAT EDIT - Veteran quirks
 };
 
-// SKYRAT EDIT
+// SKYRAT EDIT START
 export type Language = {
   description: string;
   name: string;
@@ -80,6 +96,7 @@ export type Limb = {
   chosen_aug: string;
   chosen_style: string;
   aug_choices: Record<string, string>;
+  costs: Record<string, number>;
   markings: MarkingData;
 };
 
@@ -88,6 +105,7 @@ export type Organ = {
   name: string;
   chosen_organ: string;
   organ_choices: Record<string, string>
+  costs: Record<string, number>;
 };
 
 // SKYRAT EDIT END
@@ -137,7 +155,7 @@ export type PreferencesMenuData = {
   preview_options: string; // SKYRAT EDIT ADDITION
   preview_selection: string; // SKYRAT EDIT ADDITION
 
-  is_veteran: BooleanLike;
+  is_veteran: BooleanLike; // SKYRAT EDIT - Veteran status
 
   character_preferences: {
     clothing: Record<string, string>;
@@ -182,6 +200,9 @@ export type PreferencesMenuData = {
   selected_languages: Language[];
   unselected_languages: Language[];
   total_language_points: number;
+  quirks_balance: number;
+  positive_quirk_count: number;
+  species_restricted_jobs?: string[];
 // SKYRAT EDIT END
   keybindings: Record<string, string[]>;
   overflow_role: string;
@@ -199,6 +220,10 @@ export type PreferencesMenuData = {
 };
 
 export type ServerData = {
+  jobs: {
+    departments: Record<string, Department>;
+    jobs: Record<string, Job>;
+  };
   names: {
     types: Record<string, Name>;
   };
