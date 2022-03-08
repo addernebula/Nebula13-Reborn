@@ -6,7 +6,7 @@
 	faction = FACTION_STATION
 	total_positions = 1
 	spawn_positions = 1
-	supervisors = "Central Command and the Nanotrasen Representative"
+	supervisors = "Central Command and the Nanotrasen Consultant"
 	selection_color = "#c6ffe0"
 	minimal_player_age = 7
 	exp_requirements = 2400
@@ -41,7 +41,6 @@
 	)
 
 	veteran_only = TRUE
-
 	job_flags = JOB_ANNOUNCE_ARRIVAL | JOB_CREW_MANIFEST | JOB_EQUIP_RANK | JOB_CREW_MEMBER | JOB_NEW_PLAYER_JOINABLE | JOB_REOPEN_ON_ROUNDSTART_LOSS | JOB_ASSIGN_QUIRKS
 
 /datum/outfit/job/blueshield

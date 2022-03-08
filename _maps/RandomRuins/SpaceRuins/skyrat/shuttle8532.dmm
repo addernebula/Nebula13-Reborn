@@ -193,8 +193,6 @@
 "dX" = (
 /obj/structure/table/reinforced,
 /obj/structure/cable,
-/obj/structure/cable,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer2,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer2,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer4,
 /obj/effect/spawner/random/food_or_drink/three_course_meal,
@@ -268,10 +266,6 @@
 	},
 /turf/open/floor/iron/airless,
 /area/ruin/space/has_grav/shuttle8532bridge)
-"eY" = (
-/obj/effect/decal/cleanable/glass,
-/turf/open/floor/plating,
-/area/template_noop)
 "fc" = (
 /obj/effect/turf_decal/trimline/neutral/filled/line{
 	dir = 4
@@ -1690,11 +1684,6 @@
 /obj/effect/turf_decal/vg_decals/numbers/three,
 /turf/open/floor/iron/airless,
 /area/ruin/space/has_grav/shuttle8532engineering)
-"Hb" = (
-/obj/structure/lattice,
-/obj/structure/lattice,
-/turf/template_noop,
-/area/template_noop)
 "Hf" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer2,
@@ -1772,7 +1761,7 @@
 /obj/effect/decal/cleanable/dirt/dust,
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer4,
-/turf/open/floor/plating,
+/turf/open/floor/plating/airless,
 /area/template_noop)
 "Iv" = (
 /turf/open/floor/plating/airless,
@@ -2476,9 +2465,7 @@
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer2,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer4,
-/turf/open/floor/plating{
-	icon_state = "panelscorched"
-	},
+/turf/open/floor/plating/airless,
 /area/ruin/space/has_grav/shuttle8532engineering)
 "XD" = (
 /obj/item/shard{
@@ -4281,7 +4268,7 @@ qb
 qb
 OQ
 dE
-eY
+hj
 OQ
 OQ
 OQ
@@ -4409,7 +4396,7 @@ qb
 qb
 qb
 qb
-Hb
+OQ
 OQ
 qb
 qb

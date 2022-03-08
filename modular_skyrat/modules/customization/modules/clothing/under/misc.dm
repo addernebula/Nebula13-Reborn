@@ -34,7 +34,7 @@
 	desc = "We've saved money by giving you half a shirt!"
 	icon_state = "croptop"
 	body_parts_covered = CHEST|GROIN|ARMS
-	fitted = FEMALE_UNIFORM_TOP
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 	can_adjust = FALSE
 
 /obj/item/clothing/under/misc/gear_harness
@@ -45,19 +45,17 @@
 	icon_state = "gear_harness"
 	body_parts_covered = CHEST|GROIN
 	can_adjust = FALSE
-
-/obj/item/clothing/under/misc/poly_kilt
-	name = "polychromic kilt"
-	desc = "It's not a skirt!"
-	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
-	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
-	icon_state = "polykilt"
-	body_parts_covered = CHEST|GROIN|ARMS|LEGS
 	mutant_variants = NONE
 
-/obj/item/clothing/under/misc/poly_kilt/ComponentInitialize()
-	. = ..()
-	AddElement(/datum/element/polychromic, list("#FFFFFF", "#FF8888", "#FFFFFF"))
+/obj/item/clothing/under/misc/colourable_kilt
+	name = "colourable kilt"
+	desc = "It's not a skirt!"
+	icon_state = "kilt"
+	greyscale_config = /datum/greyscale_config/kilt
+	greyscale_config_worn = /datum/greyscale_config/kilt/worn
+	greyscale_colors = "#008000#777777"
+	flags_1 = IS_PLAYER_COLORABLE_1
+	mutant_variants = NONE
 
 /obj/item/clothing/under/misc/royalkilt
 	name = "royal kilt"
@@ -425,19 +423,16 @@
 	icon_state = "scarface"
 
 /obj/item/clothing/under/misc/gear_harness/eve
-	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
-	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
 	name = "collection of leaves"
 	desc = "Three leaves, designed to cover the nipples and genetalia of the wearer. A foe so proud will first the weaker seek."
 	icon_state = "eve"
 
-/obj/item/clothing/under/costume/loincloth/sensor/adam
-	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
-	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
+/obj/item/clothing/under/misc/gear_harness/adam
 	name = "leaf"
 	desc = "A single leaf, designed to cover the genitalia of the wearer. Seek not temptation."
 	icon_state = "adam"
-	can_adjust = FALSE
+	body_parts_covered = GROIN
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 
 /obj/item/clothing/under/misc/evilcargo
 	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
@@ -464,7 +459,7 @@
 	body_parts_covered = GROIN
 	can_adjust = FALSE
 	mutant_variants = NONE
-	fitted = FEMALE_UNIFORM_TOP
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 
 /obj/item/clothing/under/rank/civilian/hydroponics/trouser
 	desc = "A green set of trousers, perfect for making pigs smoke."
@@ -475,7 +470,7 @@
 	body_parts_covered = GROIN
 	can_adjust = FALSE
 	mutant_variants = NONE
-	fitted = FEMALE_UNIFORM_TOP
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 
 /obj/item/clothing/under/rank/security/peacekeeper/trousers
 	name = "peacekeeper's trousers"
@@ -486,7 +481,7 @@
 	body_parts_covered = GROIN
 	can_adjust = FALSE
 	mutant_variants = NONE
-	fitted = FEMALE_UNIFORM_TOP
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 
 /obj/item/clothing/under/rank/security/peacekeeper/trousers/red
 	name = "security officer's trousers"
@@ -692,7 +687,7 @@
 	icon = 'modular_skyrat/master_files/icons/obj/clothing/uniforms.dmi'
 	worn_icon = 'modular_skyrat/master_files/icons/mob/clothing/uniform.dmi'
 	icon_state = "lucifer"
-	fitted = FEMALE_UNIFORM_TOP
+	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 	obj_flags = UNIQUE_RENAME
 	unique_reskin = list(
 		"Pride" = "lucifer",

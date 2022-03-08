@@ -582,7 +582,6 @@
 /turf/open/floor/carpet,
 /area/ruin/space/has_grav/deepstorage/lostcargo)
 "lM" = (
-/obj/machinery/paystand,
 /obj/machinery/light,
 /turf/open/floor/iron/brown/side,
 /area/ruin/space/has_grav/deepstorage/lostcargo)
@@ -972,7 +971,7 @@
 	name = "Basmati Rice Sack (4KG)";
 	volume = 150
 	},
-/turf/open/floor/iron/kitchen_coldroom/freezerfloor,
+/turf/open/floor/iron/freezer,
 /area/ruin/space/has_grav/deepstorage/lostcargo)
 "sv" = (
 /obj/structure/window/reinforced/tinted{

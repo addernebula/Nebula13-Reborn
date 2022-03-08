@@ -99,6 +99,25 @@
 	ammo_type = /obj/item/ammo_casing/b9mm/rubber
 	round_type = AMMO_TYPE_RUBBER
 
+/obj/item/gun/ballistic/automatic/pistol/g17/mesa
+	name = "\improper Glock-17"
+	desc = "A weapon from bygone times, and this is the exact 21st century version. In fact, even more reliable. Chambered in 9mm."
+	icon = 'modular_skyrat/modules/sec_haul/icons/guns/glock.dmi'
+	icon_state = "glock_mesa"
+	w_class = WEIGHT_CLASS_NORMAL
+	mag_type = /obj/item/ammo_box/magazine/multi_sprite/g17
+	can_suppress = FALSE
+	fire_sound = 'modular_skyrat/master_files/sound/weapons/glock17_fire.ogg'
+	rack_sound = 'sound/weapons/gun/pistol/rack.ogg'
+	lock_back_sound = 'sound/weapons/gun/pistol/slide_lock.ogg'
+	bolt_drop_sound = 'sound/weapons/gun/pistol/slide_drop.ogg'
+	realistic = TRUE
+	can_flashlight = TRUE
+	dirt_modifier = 0.2
+	emp_damageable = FALSE
+	armadyne = FALSE
+	fire_delay = 0.9
+
 ////////////////PDH 40x32
 /obj/item/gun/ballistic/automatic/pistol/pdh
 	name = "\improper PDH-6H 'Osprey'"
@@ -528,6 +547,9 @@
 	caliber = CALIBER_10MM
 	start_empty = TRUE
 
+/obj/item/ammo_box/revolver/zeta/full
+	start_empty = FALSE
+
 /////////////////////////////////////////////////////////REVOLUTION
 /obj/item/gun/ballistic/revolver/revolution
 	name = "\improper Revolution-8 'Spurmaster'"
@@ -557,6 +579,9 @@
 	multiple_sprites = AMMO_BOX_FULL_EMPTY_BASIC
 	caliber = CALIBER_9MM
 	start_empty = TRUE
+
+/obj/item/ammo_box/revolver/revolution/full
+	start_empty = FALSE
 
 /////////////////SMARTGUN 40x32
 /obj/item/gun/ballistic/automatic/smartgun
@@ -645,7 +670,7 @@
 
 /obj/item/gun/ballistic/automatic/g11
 	name = "\improper G11 K-490"
-	desc = "An outdated german caseless battle rifle that has been revised countless times during the late 2400s. Takes 4.73×33mm toploaded magazines."
+	desc = "An outdated german caseless battle rifle that has been revised countless times during the late 2400s. Takes 4.73x33mm toploaded magazines."
 	icon = 'modular_skyrat/modules/sec_haul/icons/guns/g11.dmi'
 	righthand_file = 'modular_skyrat/modules/sec_haul/icons/guns/inhands/righthand.dmi'
 	lefthand_file = 'modular_skyrat/modules/sec_haul/icons/guns/inhands/lefthand.dmi'
@@ -671,7 +696,7 @@
 	dirt_modifier = 0.1
 
 /obj/item/ammo_box/magazine/multi_sprite/g11
-	name = "4.73×33mm top-loader magazine"
+	name = "4.73x33mm top-loader magazine"
 	icon = 'modular_skyrat/modules/sec_haul/icons/guns/mags.dmi'
 	icon_state = "g11"
 	ammo_type = /obj/item/ammo_casing/caseless/b473
