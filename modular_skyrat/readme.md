@@ -17,6 +17,10 @@ Don't dump on them the work that you could have done yourself.
 
 This document is meant to be updated and changed, whenever any new exceptions are added onto it. It might be worth it to check, from time to time, whether we didn't define a more unique standardized way of handling some common change.
 
+## Important note - TEST YOUR PULL REQUESTS
+
+You are responsible for the testing of your content. You should not mark a pull request ready for review until you have actually tested it. If you require a separate client for testing, you can use a guest account by logging out of BYOND and connecting to your test server. Test merges are not for bug finding, they are for stress tests where local testing simply doesn't allow for this.
+
 ### The nature of conflicts
 
 For example, let's have an original
@@ -68,13 +72,17 @@ And then you'll want to establish your core folder that you'll be working out of
 
 ### Maps
 
-The major station maps have their equivalents in the same folder as the originals, but with their filename having a `_skyrat` suffix.
+IMPORTANT: MAP CONTRIBUTION GUIDELINES HAVE BEEN UPDATED
+When you are adding a new item to the map you MUST follow this procedure:
+Start by deciding how big of a change it is going to be, if it is a small 1 item change, you should use the simple area automapper. If it is an entire room, you should use the template automapper.
 
-If you wanted to add some location to the CentCom z-level, a'la whatever off-station location that isn't meant to be reachable or escapable through normal means, we have our own separate z-level, in `_maps/map_files/generic/Offstation_skyrat.dmm`. That z-level, by design, has the same traits as the CentCom z-level, meaning that teleporters and a lot of other things will simply refuse to work there.
+We will no longer have _skyrat map versions.
 
-If you plan to edit space ruins and so on, currently, it should be discussed with a maintainer and likely should be PRed upstream, to tgstation repository.
+DO NOT CHANGE TG MAPS, THEY ARE HELD TO THE SAME STANDARD AS ICONS. USE THE ABOVE TO MAKE MAP EDITS.
 
-Put any skyrat specific maps into the _maps/ folder, and then into the skyrat folder inside the type. E.g. an ice ruin map would go into_maps/RandomRuins/IceRuins/skyrat/whatever.dmm.
+The automapper uses prebaked templates to override sections of a map using coordinates to plot the starting location. See entries in automapper_config.toml for examples.
+
+The simple area automapper uses datum entries to place down a single item in an area of a map that makes vauge sense.
 
 ### Assets: images, sounds, icons and binaries
 

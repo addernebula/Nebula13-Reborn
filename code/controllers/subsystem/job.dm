@@ -118,7 +118,7 @@ SUBSYSTEM_DEF(job)
 		if(!job.config_check())
 			continue
 		if(!job.map_check()) //Even though we initialize before mapping, this is fine because the config is loaded at new
-			testing("Removed [job.type] due to map config")
+			log_job_debug("Removed [job.title] due to map config")
 			continue
 		new_all_occupations += job
 		name_occupations[job.title] = job
@@ -613,9 +613,6 @@ SUBSYSTEM_DEF(job)
 	for(var/datum/job/job as anything in joinable_occupations)
 		var/regex/jobs = new("[job.title]=(-1|\\d+),(-1|\\d+)")
 		jobs.Find(jobstext)
-		if(length(jobs.group)<2)
-			stack_trace("failed to find a job entry for [job.title] in jobs.txt")
-			continue
 		job.total_positions = text2num(jobs.group[1])
 		job.spawn_positions = text2num(jobs.group[2])
 
@@ -674,6 +671,7 @@ SUBSYSTEM_DEF(job)
 	to_chat(player, "<span class='infoplain'><b>You have failed to qualify for any job you desired.</b></span>")
 	unassigned -= player
 	player.ready = PLAYER_NOT_READY
+	player.client << output(player.ready, "lobby_browser:imgsrc") //SKYRAT EDIT ADDITION
 
 
 /datum/controller/subsystem/job/Recover()
@@ -748,7 +746,7 @@ SUBSYSTEM_DEF(job)
 
 ///Lands specified mob at a random spot in the hallways
 /datum/controller/subsystem/job/proc/DropLandAtRandomHallwayPoint(mob/living/living_mob)
-	var/turf/spawn_turf = get_safe_random_station_turf(typesof(/area/hallway))
+	var/turf/spawn_turf = get_safe_random_station_turf(typesof(/area/station/hallway))
 
 	if(!spawn_turf)
 		SendToLateJoin(living_mob)
@@ -851,8 +849,8 @@ SUBSYSTEM_DEF(job)
 	var/obj/item/id_slot = new_captain.get_item_by_slot(ITEM_SLOT_ID)
 	if(id_slot)
 		var/obj/item/card/id/id_card = id_slot.GetID()
-		if(!(ACCESS_HEADS in id_card.access))
-			id_card.add_wildcards(list(ACCESS_HEADS), mode=FORCE_ADD_ALL)
+		if(!(ACCESS_COMMAND in id_card.access))
+			id_card.add_wildcards(list(ACCESS_COMMAND), mode=FORCE_ADD_ALL)
 
 	assigned_captain = TRUE
 
@@ -894,21 +892,21 @@ SUBSYSTEM_DEF(job)
 		return JOB_UNAVAILABLE_GENERIC
 
 	if(possible_job.title in player.mind.restricted_roles)
-		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_ANTAG_INCOMPAT)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
+		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_ANTAG_INCOMPAT, possible_job.title)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
 		return JOB_UNAVAILABLE_ANTAG_INCOMPAT
 
 	if(!possible_job.player_old_enough(player.client))
-		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_ACCOUNTAGE)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
+		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_ACCOUNTAGE, possible_job.title)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
 		return JOB_UNAVAILABLE_ACCOUNTAGE
 
 	var/required_playtime_remaining = possible_job.required_playtime_remaining(player.client)
 	if(required_playtime_remaining)
-		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_PLAYTIME)], Player: [player], MissingTime: [required_playtime_remaining][add_job_to_log ? ", Job: [possible_job]" : ""]")
+		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_PLAYTIME, possible_job.title)], Player: [player], MissingTime: [required_playtime_remaining][add_job_to_log ? ", Job: [possible_job]" : ""]")
 		return JOB_UNAVAILABLE_PLAYTIME
 
 	// Run the banned check last since it should be the rarest check to fail and can access the database.
 	if(is_banned_from(player.ckey, possible_job.title))
-		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_BANNED)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
+		JobDebug("[debug_prefix] Error: [get_job_unavailable_error_message(JOB_UNAVAILABLE_BANNED, possible_job.title)], Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
 		return JOB_UNAVAILABLE_BANNED
 
 	//SKYRAT EDIT ADDITION BEGIN - CUSTOMIZATION
@@ -936,6 +934,7 @@ SUBSYSTEM_DEF(job)
 	//SKYRAT EDIT END
 
 	// Run this check after is_banned_from since it can query the DB which may sleep.
+	// Need to recheck the player exists after is_banned_from since it can query the DB which may sleep.
 	if(QDELETED(player))
 		JobDebug("[debug_prefix] player is qdeleted, Player: [player][add_job_to_log ? ", Job: [possible_job]" : ""]")
 		return JOB_UNAVAILABLE_GENERIC

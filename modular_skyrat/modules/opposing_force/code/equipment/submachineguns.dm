@@ -5,7 +5,7 @@
 	item_type = /obj/item/gun/ballistic/automatic/mp40
 	admin_note = "WARNING: This weapon is extremely powerful, firing a 3 round burst of 30 damage bullets."
 
-/datum/opposing_force_equipment/submachine_gun/mp40m/modern
+/datum/opposing_force_equipment/submachine_gun/mp40mm
 	item_type = /obj/item/gun/ballistic/automatic/mp40/modern
 	admin_note = "WARNING: This weapon is extremely powerful, firing a 4 round burst of 30 damage bullets. The modern version has a reduced fire delay."
 
@@ -47,12 +47,12 @@
 	item_type = /obj/item/gun/ballistic/automatic/croon
 
 /datum/opposing_force_equipment/submachine_gun/pcr
-	item_type = /obj/item/gun/energy/pcr
-	description = "An accurate, fast-firing SMG chambered in 9x19mm. Fires hardlight bullets."
+	item_type = /obj/item/gun/ballistic/automatic/pcr
+	description = "An accurate, fast-firing SMG chambered in 9x19mm."
 
 /datum/opposing_force_equipment/submachine_gun/pitbull
-	item_type = /obj/item/gun/energy/pitbull
-	description = "A sturdy personal defense weapon designed to fire 10mm Auto rounds. Fires hardlight bullets."
+	item_type = /obj/item/gun/ballistic/automatic/pitbull
+	description = "A sturdy personal defense weapon designed to fire 10mm Auto rounds."
 
 /datum/opposing_force_equipment/submachine_gun/c20r
 	item_type = /obj/item/gun/ballistic/automatic/c20r/unrestricted

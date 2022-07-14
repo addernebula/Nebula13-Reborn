@@ -7,12 +7,6 @@
 /datum/reagent/medicine/stimulants
 	process_flags = REAGENT_ORGANIC | REAGENT_SYNTHETIC //Syndicate developed 'accelerants' for synths?
 
-/datum/reagent/medicine/neo_jelly
-	process_flags = REAGENT_ORGANIC | REAGENT_SYNTHETIC //Should synthetic miners not be able to use pens? Up for a debate probably but for now lets leave their contents in
-
-/datum/reagent/medicine/lavaland_extract
-	process_flags = REAGENT_ORGANIC | REAGENT_SYNTHETIC
-
 /datum/reagent/medicine/leporazine
 	process_flags = REAGENT_ORGANIC | REAGENT_SYNTHETIC
 
@@ -67,7 +61,7 @@
 
 
 /datum/reagent/medicine/nanite_slurry/on_mob_life(mob/living/carbon/affected_mob)
-	affected_mob.heal_bodypart_damage(healing * REM, healing * REM, required_status = BODYPART_ROBOTIC)
+	affected_mob.heal_bodypart_damage(healing * REM, healing * REM, required_status = BODYTYPE_ROBOTIC)
 	..()
 
 /datum/reagent/medicine/nanite_slurry/overdose_process(mob/living/carbon/affected_mob, delta_time, times_fired)

@@ -1,18 +1,5 @@
 import { useBackend, useSharedState } from '../backend';
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Modal,
-  RoundGauge,
-  Section,
-  Slider,
-  Stack,
-  NoticeBox,
-  Tabs,
-  LabeledList,
-} from '../components';
+import { Box, Button, Flex, Icon, Modal, RoundGauge, Section, Slider, Stack, NoticeBox, Tabs, LabeledList } from '../components';
 import { Window } from '../layouts';
 import { GasmixParser } from './common/GasmixParser';
 
@@ -45,7 +32,8 @@ const TankCompressorContent = (props, context) => {
                 fluid
                 icon={currentTab === 1 ? 'clipboard-list' : 'times'}
                 onClick={() =>
-                  currentTab === 1 ? changeTab(2) : changeTab(1)}>
+                  currentTab === 1 ? changeTab(2) : changeTab(1)
+                }>
                 {currentTab === 1 ? 'Open Records' : 'Close Records'}
               </Button>
             </Stack.Item>
@@ -99,7 +87,9 @@ const TankCompressorControls = (props, context) => {
     active,
     transferRate,
     ejectPressure,
-    portData = [],
+    inputData,
+    outputData,
+    bufferData,
   } = data;
   const pressure = tankPresent ? tankPressure : lastPressure;
   const usingLastData = !!(lastPressure && !tankPresent);
@@ -165,9 +155,9 @@ const TankCompressorControls = (props, context) => {
                     icon_name="biohazard"
                     color="red"
                     active={
-                      (pressure >= leakPressure
-                        && pressure < fragmentPressure)
-                      || leaking
+                      (pressure >= leakPressure &&
+                        pressure < fragmentPressure) ||
+                      leaking
                     }
                   />
                 </Stack.Item>
@@ -196,7 +186,8 @@ const TankCompressorControls = (props, context) => {
                 step={0.5}
                 unit="L/S"
                 onDrag={(e, new_rate) =>
-                  act('change_rate', { target: new_rate })}
+                  act('change_rate', { target: new_rate })
+                }
               />
             </Stack.Item>
             <Stack.Item>
@@ -215,16 +206,33 @@ const TankCompressorControls = (props, context) => {
       </Stack.Item>
       <Stack.Item grow>
         <Stack fill>
-          {portData.map((individualGasmix) => (
-            <Stack.Item grow key={individualGasmix.ref}>
-              <Section fill scrollable title={individualGasmix.name}>
-                {!individualGasmix.total_moles && (
-                  <Modal>{'No Gas Present'}</Modal>
-                )}
-                <GasmixParser {...individualGasmix} />
-              </Section>
-            </Stack.Item>
-          ))}
+          <Stack.Item grow>
+            <Section fill scrollable title={inputData.name}>
+              {!inputData.total_moles && <Modal>{'No Gas Present'}</Modal>}
+              <GasmixParser gasmix={inputData} />
+            </Section>
+          </Stack.Item>
+          <Stack.Item grow>
+            <Section fill scrollable title={outputData.name}>
+              {!outputData.inputData && <Modal>{'No Gas Present'}</Modal>}
+              <GasmixParser gasmix={outputData} />
+            </Section>
+          </Stack.Item>
+          <Stack.Item grow>
+            <Section
+              fill
+              scrollable
+              title={bufferData.name}
+              buttons={
+                <Button
+                  icon="exclamation"
+                  tooltip="The buffer gas mixture will be recorded when a tank is destroyed or ejected. The printed records will refer to this port for it's experimental data."
+                />
+              }>
+              {!bufferData.total_moles && <Modal>{'No Gas Present'}</Modal>}
+              <GasmixParser gasmix={bufferData} />
+            </Section>
+          </Stack.Item>
         </Stack>
       </Stack.Item>
     </>
@@ -239,15 +247,16 @@ const TankCompressorRecords = (props, context) => {
     'recordRef',
     records[0]?.ref
   );
-  const activeRecord = !!activeRecordRef && records.find((record) => 
-    activeRecordRef === record.ref);
+  const activeRecord =
+    !!activeRecordRef &&
+    records.find((record) => activeRecordRef === record.ref);
   if (records.length === 0) {
     return (
       <Stack.Item grow>
         <NoticeBox>No Records</NoticeBox>
-      </Stack.Item>);
-  } 
-  else {
+      </Stack.Item>
+    );
+  } else {
     return (
       <Stack.Item grow>
         <Stack fill>
