@@ -70,7 +70,7 @@
 	for(var/datum/surgery/S in surgeries)
 		if(body_position == LYING_DOWN || !S.lying_required)
 			var/list/modifiers = params2list(params)
-			if(((S.self_operable && HAS_TRAIT(src, TRAIT_SELF_SURGERY_CAPABLE)) || user != src) && !user.combat_mode)
+			if((S.self_operable || user != src) && !user.combat_mode)
 				if(S.next_step(user, modifiers))
 					return 1
 

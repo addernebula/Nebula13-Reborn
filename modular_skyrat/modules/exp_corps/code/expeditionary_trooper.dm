@@ -154,7 +154,6 @@
 	new /obj/item/storage/belt/military/expeditionary_corps/field_medic(src)
 	new /obj/item/storage/backpack/duffelbag/expeditionary_corps(src)
 	new /obj/item/healthanalyzer(src)
-	new /obj/item/skillchip/job/medical(src)
 
 //engineer gaming
 /obj/structure/closet/crate/secure/exp_corps/combat_tech/PopulateContents()

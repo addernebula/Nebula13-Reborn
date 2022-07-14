@@ -6,34 +6,6 @@
 	panel_type = "panel11"
 	product_ads = "Go save some lives!;The best stuff for your medbay.;Only the finest tools.;Natural chemicals!;This stuff saves lives.;Don't you want some?;Ping!"
 	req_access = list(ACCESS_MEDICAL)
-	products = list(/obj/item/stack/medical/gauze = 8,
-					/obj/item/reagent_containers/syringe = 12,
-					/obj/item/reagent_containers/dropper = 3,
-					/obj/item/healthanalyzer = 4,
-					/obj/item/wrench/medical = 1,
-					/obj/item/stack/sticky_tape/surgical = 3,
-					/obj/item/healthanalyzer/wound = 4,
-					/obj/item/stack/medical/ointment = 2,
-					/obj/item/stack/medical/suture = 2,
-					/obj/item/stack/medical/bone_gel/four = 4)
-	contraband = list(/obj/item/storage/box/gum/happiness = 3,
-						/obj/item/storage/box/hug/medical = 1)
-	premium = list(/obj/item/reagent_containers/hypospray/medipen = 3,
-					/obj/item/storage/belt/medical = 3,
-					/obj/item/sensor_device = 2,
-					/obj/item/pinpointer/crew = 2,
-					/obj/item/storage/firstaid/advanced = 2,
-					/obj/item/shears = 1,
-					/obj/item/storage/organbox = 1,
-					//SKYRAT EDIT BEGIN - ADDS CORTICAL STACKS AND REMOVERS TO NANOMEDS
-					/obj/item/autosurgeon/organ/corticalstack = 3,
-					/obj/item/stackremover = 5,
-					/obj/item/storage/organbox = 1,
-					//SKYRAT EDIT END
-					//NEBULA CHANGE BEGIN
-					//obj/item/skillchip/job/medical = 4,
-					//NEBULA CHANGE END
-	refill_canister = /obj/item/vending_refill/medical)
 	products = list(
 		/obj/item/stack/medical/gauze = 8,
 		/obj/item/reagent_containers/syringe = 12,
