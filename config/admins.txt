@@ -10,6 +10,7 @@ ppduin = Senior Admin
 addervfx = Head Admin
 rerom = Head Admin
 argentinogostoso = Game Admin
+fidgetybacchus = Game Admin
 pepsi02 = Game Admin
 dantesousa = Seer
 romulo27 = Seer
