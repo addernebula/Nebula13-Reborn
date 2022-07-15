@@ -55,26 +55,31 @@ Exclude =
 Edit =
 
 Name = Badmin
-Include = @ POSSESS POLL BUILD SERVER FUN
+Include = EVERYTHING
 Exclude =
-Edit =
+Edit = EVERYTHING
 
 Name = Game Admin
 Include = @ STEALTH SOUND DEBUG
 Exclude =
 Edit =
 
-Name = Game Master
+Name = Head Admin
 Include = EVERYTHING
 Exclude =
 Edit = EVERYTHING
 
-Name = Lazy Master
+Name = Seer
 Include = EVERYTHING
 Exclude = AUTOADMIN
 Edit = EVERYTHING
 
 Name = Host
+Include = EVERYTHING
+Exclude =
+Edit = EVERYTHING
+
+Name = Senior Admin
 Include = EVERYTHING
 Exclude =
 Edit = EVERYTHING

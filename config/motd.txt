@@ -1,5 +1,37 @@
-<!-- Most valid html will work in here, excluding images. -->
 
-<h1>Welcome to Space Station 13!</h1>
+<html>
+<body>
+<body style="background-color:powderblue;">
 
-<i>This server is running a /tg/station 13 Git build.</i>
+<h1>Bem vindo a burguês station!</h1>
+<h1>Não se esqueça de ler as regras logo abaixo;</h1>
+<p>1. Freekill
+<p>Se comporte, as outras pessoas estão aqui pra jogar, se você ficar com vontade de tirar gente do round sem motivo, só retribuiremos o favor.</p>
+
+<p>2. RP
+<p>Você não é obrigado a seguir políticas de RP, entre com o nome que quiser, mas respeite NLR (Esqueça o que aconteceu em vida passada), o jogo fica torto sem ele querendo ou não.</p>
+
+<p>3. Metacomm</p>
+Eu não ligo pra metacomm, a menos que usado para coletar informações de fora e para grief.</p>
+
+<p>4. Zaralhação</p>
+<p>Mesmo em low-rp as pessoas esperam um certo nível de experiência em heads of staff, eu não ligo pra zaralhação pessoalmente com tu sendo head, mas por conta disso eu ainda pegarei no seu pé mais do que de costume se você for importante.<p>
+
+<p>5. Multikey</p>
+<p>Eu não ligo pra multikey a menos que usado para grief.</p>
+
+<p>6. Murderbone
+<p>EU ODEIO ESSA REGRA MAS ELA PRECISA SER FEITA. A gente NÃO TEM POP pra ter gente fazendo murderbone, EVITEM.
+
+<p>7. Convivência
+<p>Não seja babaca com os outros, não taque gente de airlock, não roube gente só porque te deu vontade como crew, e o mais importante, não encha o saco de pessoas no OOC ou deadchat.
+Se a forma que um jogador age te desconforta com motivo plausível, não hesite em realizar um ahelp, isso já é quebra de convivência.
+Grudge cai nessa regra.</p>
+
+<p>Nota final: As regras não são leis escritas, são guias para a staff do que deve ser mantido o olho, se eu achar que é justo te banir mesmo que tu não tenha quebrado nenhuma das cinco, você vai ser banido e é isso ai.</p>
+</p>
+<p><a href="https://discord.gg/CSYsBsGhdz">Clique aqui para entrar em nosso discord</a></p>
+
+</body>
+</html>
+

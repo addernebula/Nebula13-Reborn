@@ -38,11 +38,11 @@ map tramstation
 	minplayers 35
 endmap
 
-map runtimestation
-endmap
+#map runtimestation
+#endmap
 
-map multiz_debug
-endmap
+#map multiz_debug
+#endmap
 
 ##SKYRAT MAPS##
 
